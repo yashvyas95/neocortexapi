@@ -28,10 +28,20 @@ namespace NeoCortexApi
 {
     public class SpatialPooler
     {
-        public double MaxInibitionDensity { get; set; } = 0.5;
+        #region Private Fields
 
         /** Default Serial Version  */
         private static readonly long serialVersionUID = 1L;
+
+        #endregion
+
+        #region Properties
+
+        public double MaxInibitionDensity { get; set; } = 0.5;
+
+        #endregion
+
+        #region Constructors and Initialization
 
         /**
          * Constructs a new {@code SpatialPooler}
@@ -45,6 +55,7 @@ namespace NeoCortexApi
          * 
          * @param c     a {@link Connections} object
          */
+
         public void init(Connections c)
         {
             if (c.NumActiveColumnsPerInhArea == 0 && (c.LocalAreaDensity == 0 ||
@@ -58,12 +69,17 @@ namespace NeoCortexApi
             connectAndConfigureInputs(c);
         }
 
+        #endregion
+
+        #region Public Methods
+
         /**
          * Called to initialize the structural anatomy with configured values and prepare
          * the anatomical entities for activation.
          * 
          * @param c
          */
+
         public void initMatrices(Connections c)
         {
             SparseObjectMatrix<Column> mem = c.getMemory();
@@ -116,6 +132,7 @@ namespace NeoCortexApi
          * 
          * @param c     the {@link Connections} memory
          */
+
         public void connectAndConfigureInputs(Connections c)
         {
             // Initialize the set of permanence values for each column. Ensure that
@@ -170,12 +187,13 @@ namespace NeoCortexApi
          *                          and has many uses. For example, you might want to feed in
          *                          various inputs and examine the resulting SDR's.
          */
+
         public void compute(Connections c, int[] inputVector, int[] activeArray, bool learn)
         {
             if (inputVector.Length != c.NumInputs)
             {
                 throw new ArgumentException(
-                        "Input array must be same size as the defined number of inputs: From Params: " + c.NumInputs+
+                        "Input array must be same size as the defined number of inputs: From Params: " + c.NumInputs +
                         ", From Input Vector: " + inputVector.Length);
             }
 
@@ -232,6 +250,7 @@ namespace NeoCortexApi
              * @param activeColumns An array containing the indices of the active columns
              * @return  a list of columns with a chance of activation
              */
+
         public int[] stripUnlearnedColumns(Connections c, int[] activeColumns)
         {
             //TIntHashSet active = new TIntHashSet(activeColumns);
@@ -308,6 +327,7 @@ namespace NeoCortexApi
          * 
          * @param c
          */
+
         public void updateMinDutyCyclesGlobal(Connections c)
         {
             ArrayUtils.fillArray(c.getMinOverlapDutyCycles(),
@@ -318,17 +338,18 @@ namespace NeoCortexApi
         }
 
         /**
-     * Gets a neighborhood of columns.
-     * 
-     * Simply calls topology.neighborhood or topology.wrappingNeighborhood
-     * 
-     * A subclass can insert different topology behavior by overriding this method.
-     * 
-     * @param c                     the {@link Connections} memory encapsulation
-     * @param centerColumn          The center of the neighborhood.
-     * @param inhibitionRadius      Span of columns included in each neighborhood
-     * @return                      The columns in the neighborhood (1D)
-     */
+        * Gets a neighborhood of columns.
+        * 
+        * Simply calls topology.neighborhood or topology.wrappingNeighborhood
+        * 
+        * A subclass can insert different topology behavior by overriding this method.
+        * 
+        * @param c                     the {@link Connections} memory encapsulation
+        * @param centerColumn          The center of the neighborhood.
+        * @param inhibitionRadius      Span of columns included in each neighborhood
+        * @return                      The columns in the neighborhood (1D)
+        */
+
         public int[] getColumnNeighborhood(Connections c, int centerColumn, int inhibitionRadius)
         {
             return c.isWrapAround() ?
@@ -345,6 +366,7 @@ namespace NeoCortexApi
          * 
          * @param c
          */
+
         public void updateMinDutyCyclesLocal(Connections c)
         {
             int len = c.getNumColumns();
@@ -397,6 +419,7 @@ namespace NeoCortexApi
          * @param activeColumns     An array containing the indices of the active columns,
          *                          the sparse set of columns which survived inhibition
          */
+
         public void updateDutyCycles(Connections c, int[] overlaps, int[] activeColumns)
         {
             // All columns with overlap are set to 1. Otherwise 0.
@@ -448,6 +471,7 @@ namespace NeoCortexApi
          * @param period        The period of the duty cycle
          * @return
          */
+
         public double[] updateDutyCyclesHelper(Connections c, double[] dutyCycles, double[] newInput, double period)
         {
             return ArrayUtils.divide(ArrayUtils.d_add(ArrayUtils.multiply(dutyCycles, period - 1), newInput), period);
@@ -465,6 +489,7 @@ namespace NeoCortexApi
          * 
          * @param c     the {@link Connections} (spatial pooler memory)
          */
+
         public void updateInhibitionRadius(Connections c)
         {
             if (c.GlobalInhibition)
@@ -498,6 +523,7 @@ namespace NeoCortexApi
          * @param c     the {@link Connections} (spatial pooler memory)
          * @return
          */
+
         public virtual double avgColumnsPerInput(Connections c)
         {
             //int[] colDim = Array.Copy(c.getColumnDimensions(), c.getColumnDimensions().Length);
@@ -569,6 +595,7 @@ namespace NeoCortexApi
          * @param activeColumns     an array containing the indices of the columns that
          *                          survived inhibition.
          */
+
         public void adaptSynapses(Connections c, int[] inputVector, int[] activeColumns)
         {
             //int[] inputIndices = ArrayUtils.where(inputVector, ArrayUtils.INT_GREATER_THAN_0);
@@ -604,6 +631,7 @@ namespace NeoCortexApi
          *  
          * @param c
          */
+
         public void bumpUpWeakColumns(Connections c)
         {
             //    int[] weakColumns = ArrayUtils.where(c.getMemory().get1DIndexes(), new Condition.Adapter<Integer>() {
@@ -639,6 +667,7 @@ namespace NeoCortexApi
          * @param perm              the permanence values
          * @param maskPotential         
          */
+
         public virtual void raisePermanenceToThreshold(Connections c, double[] perm, int[] maskPotential)
         {
             if (maskPotential.Length < c.StimulusThreshold)
@@ -671,6 +700,7 @@ namespace NeoCortexApi
          * @param c         The {@link Connections} memory
          * @param perm      permanence values
          */
+
         public void raisePermanenceToThresholdSparse(Connections c, double[] perm)
         {
             ArrayUtils.clip(perm, c.getSynPermMin(), c.getSynPermMax());
@@ -704,6 +734,7 @@ namespace NeoCortexApi
          * @param maskPotential     The indexes of inputs in the specified {@link Column}'s pool.
          * @param raisePerm         a boolean value indicating whether the permanence values
          */
+
         public void updatePermanencesForColumn(Connections c, double[] perm, Column column, int[] maskPotential, bool raisePerm)
         {
             if (raisePerm)
@@ -733,6 +764,7 @@ namespace NeoCortexApi
          * @param column            The column in the permanence, potential and connectivity matrices
          * @param raisePerm         a boolean value indicating whether the permanence values
          */
+
         public void updatePermanencesForColumnSparse(Connections c, double[] perm, Column column, int[] maskPotential, bool raisePerm)
         {
             if (raisePerm)
@@ -804,6 +836,7 @@ namespace NeoCortexApi
          *                          0.7 means, maximally 70% of potential might be connected
          * @return
          */
+
         public double[] initPermanence(Connections c, int[] potentialPool, int colIndx, double connectedPct)
         {
             double[] perm = new double[c.NumInputs];
@@ -844,6 +877,7 @@ namespace NeoCortexApi
          *                      and connectivity matrices.
          * @return              Flat index of mapped column.
          */
+
         public int mapColumn(Connections c, int columnIndex)
         {
             int[] columnCoords = c.getMemory().computeCoordinates(columnIndex);
@@ -894,6 +928,7 @@ namespace NeoCortexApi
          *                      ignored.
          * @return
          */
+
         public int[] mapPotential(Connections c, int columnIndex, bool wrapAround)
         {
             int centerInput = mapColumn(c, columnIndex);
@@ -905,30 +940,6 @@ namespace NeoCortexApi
             int numPotential = (int)(columnInputs.Length * c.getPotentialPct() + 0.5);
             int[] retVal = new int[numPotential];
             return ArrayUtils.sample(columnInputs, retVal, c.getRandom());
-        }
-
-
-        private double calcInhibitionDensity(Connections c)
-        {
-            double density = c.LocalAreaDensity;
-            double inhibitionArea;
-
-            // If density is not specified then inhibition radius must be specified.
-            // In that case we calculate density from inhibition radius.
-            if (density <= 0)
-            {
-                // inhibition area can be higher than num of all columns, if 
-                // radius is near to number of columns of a dimension with highest number of columns.
-                // In that case we limit it to number of all columns.
-                inhibitionArea = Math.Pow(2 * c.InhibitionRadius + 1, c.getColumnDimensions().Length);
-                inhibitionArea = Math.Min(c.getNumColumns(), inhibitionArea);
-
-                density = c.NumActiveColumnsPerInhArea / inhibitionArea;
-
-                density = Math.Min(density, MaxInibitionDensity);
-            }
-
-            return density;
         }
 
         /**
@@ -1020,8 +1031,9 @@ namespace NeoCortexApi
          *                  of surviving columns is likely to vary.
          * @return  indices of the winning columns
          */
+
         public virtual int[] inhibitColumnsLocal(Connections c, double[] overlaps, double density)
-        { 
+        {
             double winnerDelta = ArrayUtils.max(overlaps) / 1000.0d;
             if (winnerDelta == 0)
             {
@@ -1235,6 +1247,7 @@ namespace NeoCortexApi
          * @param c the {@link Connections} memory encapsulation
          * @return
          */
+
         public bool isUpdateRound(Connections c)
         {
             return c.getIterationNum() % c.getUpdatePeriod() == 0;
@@ -1250,14 +1263,13 @@ namespace NeoCortexApi
          *                  of the model. setting learning to 'off' might be useful
          *                  for indicating separate training vs. testing sets.
          */
+
         public void updateBookeepingVars(Connections c, bool learn)
         {
             c.spIterationNum += 1;
             if (learn)
                 c.spIterationLearnNum += 1;
         }
-
-
 
         /**
          * Gets a neighborhood of inputs.
@@ -1271,12 +1283,41 @@ namespace NeoCortexApi
          * @param potentialRadius       Span of the input field included in each neighborhood
          * @return                      The input's in the neighborhood. (1D)
          */
+
         public int[] getInputNeighborhood(Connections c, int centerInput, int potentialRadius)
         {
             return c.isWrapAround() ?
                 c.getInputTopology().wrappingNeighborhood(centerInput, potentialRadius) :
                     c.getInputTopology().GetNeighborhood(centerInput, potentialRadius);
         }
+
+        #endregion
+
+        #region Private and Protected methods
+
+        private double calcInhibitionDensity(Connections c)
+        {
+            double density = c.LocalAreaDensity;
+            double inhibitionArea;
+
+            // If density is not specified then inhibition radius must be specified.
+            // In that case we calculate density from inhibition radius.
+            if (density <= 0)
+            {
+                // inhibition area can be higher than num of all columns, if 
+                // radius is near to number of columns of a dimension with highest number of columns.
+                // In that case we limit it to number of all columns.
+                inhibitionArea = Math.Pow(2 * c.InhibitionRadius + 1, c.getColumnDimensions().Length);
+                inhibitionArea = Math.Min(c.getNumColumns(), inhibitionArea);
+
+                density = c.NumActiveColumnsPerInhArea / inhibitionArea;
+
+                density = Math.Min(density, MaxInibitionDensity);
+            }
+
+            return density;
+        }
+        #endregion  
     }
 }
 
