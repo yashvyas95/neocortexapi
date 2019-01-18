@@ -6,7 +6,6 @@ using System.Linq;
 using NeoCortexApi.Utility;
 using static NeoCortexApi.Entities.Connections;
 
-
 namespace NeoCortexApi
 {
 
@@ -18,12 +17,22 @@ namespace NeoCortexApi
      */
     public class TemporalMemory //: IComputeDecorator
     {
+        #region Private Fields
+
         /** simple serial version id */
         private static readonly long serialVersionUID = 1L;
 
         private static readonly double EPSILON = 0.00001;
 
         private static readonly int cIndexofACTIVE_COLUMNS = 0;
+
+        #endregion
+
+        #region Properties
+
+        #endregion
+
+        #region Constructors and Initialization
 
         /**
          * Uses the specified {@link Connections} object to Build the structural 
@@ -40,7 +49,6 @@ namespace NeoCortexApi
          * 
          * @param   c       {@link Connections} object
          */
-
 
         public static void init(Connections c)
         {
@@ -70,7 +78,10 @@ namespace NeoCortexApi
             //Only the TemporalMemory initializes cells so no need to test for redundancy
             c.setCells(cells);
         }
+        
+        #endregion
 
+        #region Public Methods
 
         public ComputeCycle Compute(Connections connections, int[] activeColumns, bool learn)
         {
@@ -428,27 +439,6 @@ namespace NeoCortexApi
             return new BurstingTupple(cells, leastUsedCell);
         }
 
-
-        /// <summary>
-        /// Gets the segment with maximal potential.
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="matchingSegments"></param>
-        /// <returns></returns>
-        private DistalDendrite getSegmentwithHighesPotential(Connections conn, List<DistalDendrite> matchingSegments)
-        {
-            // int[] numActPotential = conn.getLastActivity().numActivePotential;
-
-            DistalDendrite maxSeg = matchingSegments[0];
-
-            for (int i = 0; i < matchingSegments.Count - 1; i++)
-            {
-                if (conn.getLastActivity().Potential[matchingSegments[i + 1].getIndex()] > conn.getLastActivity().Potential[matchingSegments[i].getIndex()])
-                    maxSeg = matchingSegments[i + 1];
-            }
-            return maxSeg;
-        }
-
         /**
          * Punishes the Segments that incorrectly predicted a column to be active.
          * 
@@ -484,10 +474,33 @@ namespace NeoCortexApi
             }
         }
 
+        #endregion
 
-        ////////////////////////////
-        //     Helper Methods     //
-        ////////////////////////////
+        #region Private and Protected methods
+
+        /// <summary>
+        /// Gets the segment with maximal potential.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="matchingSegments"></param>
+        /// <returns></returns>
+        private DistalDendrite getSegmentwithHighesPotential(Connections conn, List<DistalDendrite> matchingSegments)
+        {
+            // int[] numActPotential = conn.getLastActivity().numActivePotential;
+
+            DistalDendrite maxSeg = matchingSegments[0];
+
+            for (int i = 0; i < matchingSegments.Count - 1; i++)
+            {
+                if (conn.getLastActivity().Potential[matchingSegments[i + 1].getIndex()] > conn.getLastActivity().Potential[matchingSegments[i].getIndex()])
+                    maxSeg = matchingSegments[i + 1];
+            }
+            return maxSeg;
+        }
+
+        #endregion
+
+        #region Helper Methods
 
         /**
          * Gets the cell with the smallest number of segments.
@@ -638,6 +651,8 @@ namespace NeoCortexApi
             }
         }
 
+        #endregion
+        
         /**
          * Used in the {@link TemporalMemory#compute(Connections, int[], boolean)} method
          * to make pulling values out of the {@link GroupBy2} more readable and named.
@@ -645,24 +660,16 @@ namespace NeoCortexApi
 
         public class ColumnData
         {
+            #region Private Fields
+
             /** Default Serial */
             private static readonly long serialVersionUID = 1L;
 
             private Pair<Column, List<List<Object>>> m_Pair;
 
-            public ColumnData() { }
+            #endregion
 
-
-            public ColumnData set(Pair<Column, List<List<Object>>> t)
-            {
-                m_Pair = t;
-
-                return this;
-            }
-
-            public Column Column() { return (Column)m_Pair.Key; }
-
-            public List<Column> activeColumns() { return (List<Column>)m_Pair.Value[0].Cast<Column>(); }
+            #region Properties
 
             public List<DistalDendrite> activeSegments
             {
@@ -688,6 +695,26 @@ namespace NeoCortexApi
                 }
             }
 
+            #endregion
+
+            #region Constructors and Initialization
+
+            public ColumnData() { }
+
+            #endregion
+
+            #region Public Methods
+
+            public ColumnData set(Pair<Column, List<List<Object>>> t)
+            {
+                m_Pair = t;
+
+                return this;
+            }
+
+            public Column Column() { return (Column)m_Pair.Key; }
+
+            public List<Column> activeColumns() { return (List<Column>)m_Pair.Value[0].Cast<Column>(); }
 
             /**
              * Returns a boolean flag indicating whether the slot contained by the
@@ -700,12 +727,18 @@ namespace NeoCortexApi
             public bool isExistsAnyActiveCol(int memberIndex)
             {
                 if (m_Pair.Value.Count == 0 ||
-                    m_Pair.Value[memberIndex].Count == 0 )
-                   // m_Pair.Value[memberIndex][0] == NeoCortexApi.Utility.GroupBy2<Column>.Slot<Pair<object, List<Column>>>.empty() )
+                    m_Pair.Value[memberIndex].Count == 0)
+                    // m_Pair.Value[memberIndex][0] == NeoCortexApi.Utility.GroupBy2<Column>.Slot<Pair<object, List<Column>>>.empty() )
                     return false;
                 else
                     return true;
             }
+
+            #endregion
+
+            #region Private and Protected methods
+
+            #endregion
         }
     }
 }
