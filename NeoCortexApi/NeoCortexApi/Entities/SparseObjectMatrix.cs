@@ -105,7 +105,7 @@ namespace NeoCortexApi.Entities
          * @return  the T at the specified index.
          */
         // @Override
-        public T getObject(int index)
+        public T GetObject(int index)
         {
             return get(index);
         }
@@ -116,7 +116,7 @@ namespace NeoCortexApi.Entities
          * @return  the indexed object
          */
         // @Override
-        public T get(int[] coordinates)
+        public T Get(int[] coordinates)
         {
             return get(computeIndex(coordinates));
         }
@@ -144,7 +144,7 @@ namespace NeoCortexApi.Entities
          * @return  a sorted array of occupied indexes.
          */
         // @Override
-        public int[] getSparseIndices()
+        public int[] GetSparseIndices()
         {
             return reverse(sparseMap.Keys.ToArray());
         }

@@ -40,7 +40,7 @@ namespace NeoCortexApi.Entities
     public abstract class AbstractFlatMatrix<T> : IFlatMatrix<T>
     {
 
-        private static long serialVersionUID = 1L;
+        //private static long serialVersionUID = 1L;
 
         protected int[] dimensions;
         protected int[] dimensionMultiples;

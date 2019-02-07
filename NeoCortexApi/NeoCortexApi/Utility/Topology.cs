@@ -33,7 +33,7 @@ namespace NeoCortexApi.Utility
     public class Topology : Coordinator //implements Serializable
     {
         /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         private IntGenerator[] igs;
         private int[] centerPosition;

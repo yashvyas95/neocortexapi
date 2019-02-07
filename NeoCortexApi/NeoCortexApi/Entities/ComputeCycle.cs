@@ -42,7 +42,7 @@ namespace NeoCortexApi.Entities
     public class ComputeCycle : IEquatable<object>
     {
 
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         public List<DistalDendrite> activeSegments = new List<DistalDendrite>();
 

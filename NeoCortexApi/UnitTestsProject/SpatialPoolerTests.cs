@@ -1498,7 +1498,7 @@ namespace UnitTestsProject
             new double[]{0.101, 0.101, 0.101, 0.101, 0.101}};   // increment 9 times
 
             //FORGOT TO SET PERMANENCES ABOVE - DON'T USE mem.setPermanences() 
-            int[] indices = mem.getMemory().getSparseIndices();
+            int[] indices = mem.getMemory().GetSparseIndices();
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
                 double[] perm = mem.getPotentialPools().get(i).getSparsePermanences();
@@ -1581,7 +1581,7 @@ namespace UnitTestsProject
             {
                 for (int j = 0; j < sm.getDimensions()[1]; j++)
                 {
-                    sm.set(connectedSynapses[i][j], i, j);
+                    sm.Set(connectedSynapses[i][j], i, j);
                 }
             }
 
@@ -1617,7 +1617,7 @@ namespace UnitTestsProject
             {
                 for (int j = 0; j < sm.getDimensions()[1]; j++)
                 {
-                    sm.set(connectedSynapses[i][j], i, j);
+                    sm.Set(connectedSynapses[i][j], i, j);
                 }
             }
 
@@ -1653,7 +1653,7 @@ namespace UnitTestsProject
             {
                 for (int j = 0; j < sm.getDimensions()[1]; j++)
                 {
-                    sm.set(connectedSynapses[i][j], i, j);
+                    sm.Set(connectedSynapses[i][j], i, j);
                 }
             }
 
@@ -1691,7 +1691,7 @@ namespace UnitTestsProject
             {
                 for (int j = 0; j < sm.getDimensions()[1]; j++)
                 {
-                    sm.set(connectedSynapses[i][j], i, j);
+                    sm.Set(connectedSynapses[i][j], i, j);
                 }
             }
 

@@ -45,7 +45,7 @@ namespace NeoCortexApi
         #region Private Fields
 
         /** simple serial version id */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         private static readonly double EPSILON = 0.00001;
 
@@ -88,10 +88,10 @@ namespace NeoCortexApi
             Cell[] cells = new Cell[numColumns * cellsPerColumn];
 
             //Used as flag to determine if Column objects have been created.
-            Column colZero = matrix.getObject(0);
+            Column colZero = matrix.GetObject(0);
             for (int i = 0; i < numColumns; i++)
             {
-                Column column = colZero == null ? new Column(cellsPerColumn, i) : matrix.getObject(i);
+                Column column = colZero == null ? new Column(cellsPerColumn, i) : matrix.GetObject(i);
                 for (int j = 0; j < cellsPerColumn; j++)
                 {
                     cells[i * cellsPerColumn + j] = column.getCell(j);

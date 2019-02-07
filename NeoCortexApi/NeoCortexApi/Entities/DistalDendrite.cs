@@ -43,7 +43,7 @@ namespace NeoCortexApi.Entities
     public class DistalDendrite : Segment, IComparable<DistalDendrite>
     {
         /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         private Cell cell;
 

@@ -37,7 +37,7 @@ namespace NeoCortexApi.Entities
     public class ProximalDendrite : Segment
     {
         /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         private Pool pool;
 
@@ -97,7 +97,7 @@ namespace NeoCortexApi.Entities
 
                 if (perms[indx] >= c.getSynPermConnected())
                 {
-                    c.getConnectedCounts().set(1, index, s.getInputIndex());
+                    c.getConnectedCounts().Set(1, index, s.getInputIndex());
                 }
             }
         }
@@ -123,7 +123,7 @@ namespace NeoCortexApi.Entities
                 pool.setPermanence(c, pool.getSynapseWithInput(inputIndexes[i]), perms[i]);
                 if (perms[i] >= c.getSynPermConnected())
                 {
-                    c.getConnectedCounts().set(1, index, i);
+                    c.getConnectedCounts().Set(1, index, i);
                 }
             }
         }

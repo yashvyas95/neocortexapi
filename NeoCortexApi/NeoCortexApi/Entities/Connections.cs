@@ -679,9 +679,9 @@ namespace NeoCortexApi.Entities
          */
         public void setProximalPermanences(SparseObjectMatrix<double[]> s)
         {
-            foreach (int idx in s.getSparseIndices())
+            foreach (int idx in s.GetSparseIndices())
             {
-                memory.getObject(idx).setProximalPermanences(this, s.getObject(idx));
+                memory.GetObject(idx).setProximalPermanences(this, s.GetObject(idx));
             }
         }
 
@@ -1940,7 +1940,7 @@ namespace NeoCortexApi.Entities
          */
         public Column getColumn(int index)
         {
-            return memory.getObject(index);
+            return memory.GetObject(index);
         }
 
         /**
@@ -2289,7 +2289,7 @@ namespace NeoCortexApi.Entities
             List<Column> objs = new List<Column>();
             foreach (int i in cols)
             {
-                objs.Add(this.memory.getObject(i));
+                objs.Add(this.memory.GetObject(i));
             }
             return objs;
         }
@@ -2306,7 +2306,7 @@ namespace NeoCortexApi.Entities
             LinkedHashSet<Column> retVal = new LinkedHashSet<Column>();
             for (int i = 0; i < indexes.Length; i++)
             {
-                retVal.Add(memory.getObject(indexes[i]));
+                retVal.Add(memory.GetObject(indexes[i]));
             }
             return retVal;
         }
@@ -2323,7 +2323,7 @@ namespace NeoCortexApi.Entities
             List<Column> retVal = new List<Column>();
             for (int i = 0; i < indexes.Length; i++)
             {
-                retVal.Add(memory.getObject(indexes[i]));
+                retVal.Add(memory.GetObject(indexes[i]));
             }
             return retVal;
         }

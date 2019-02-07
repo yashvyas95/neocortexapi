@@ -45,7 +45,7 @@ namespace NeoCortexApi.Entities
     public class Column : IEquatable<Column>, IComparable<Column>
     {
         /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         /** The flat non-topological index of this column */
         private readonly int index;

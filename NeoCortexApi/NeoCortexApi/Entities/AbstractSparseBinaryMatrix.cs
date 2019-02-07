@@ -34,7 +34,7 @@ namespace NeoCortexApi.Entities
     public abstract class AbstractSparseBinaryMatrix : AbstractSparseMatrix<int>, IEquatable<object>
     {
         /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         private int[] trueCounts;
 
@@ -175,7 +175,7 @@ namespace NeoCortexApi.Entities
         public override AbstractFlatMatrix<int> set(int index, int value)
         {
             int[] coordinates = computeCoordinates(index);
-            return set(value, coordinates);
+            return Set(value, coordinates);
         }
 
         /**
@@ -185,7 +185,7 @@ namespace NeoCortexApi.Entities
          * @param object        the object to be indexed.
          */
 
-        public abstract AbstractSparseBinaryMatrix set(int value, params int[] coordinates);
+        public abstract AbstractSparseBinaryMatrix Set(int value, params int[] coordinates);
 
         /**
          * Sets the specified values at the specified indexes.
@@ -199,13 +199,13 @@ namespace NeoCortexApi.Entities
         {
             for (int i = 0; i < indexes.Length; i++)
             {
-                set(indexes[i], values[i]);
+                Set(indexes[i], values[i]);
             }
             return this;
         }
 
 
-        public Integer get(int[] coordinates)
+        public Integer Get(int[] coordinates)
         {
             return get(computeIndex(coordinates));
         }
@@ -240,7 +240,7 @@ namespace NeoCortexApi.Entities
             for (int i = 0; i < indexes.Length; i++)
             {
                 if (isTest) setForTest(indexes[i], values[i]);
-                else set(indexes[i], values[i]);
+                else Set(indexes[i], values[i]);
             }
             return this;
         }
@@ -284,7 +284,7 @@ namespace NeoCortexApi.Entities
 
             foreach (int index in getSliceIndexes(new int[] { row }))
             {
-                set(index, 0);
+                Set(index, 0);
             }
         }
 

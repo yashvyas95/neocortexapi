@@ -67,7 +67,7 @@ namespace NeoCortexApi.Entities {
     [Serializable]
     public class  Cell   : IEquatable<Cell>, IComparable<Cell> {
         /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         /** This cell's index */
         private readonly int index;

@@ -40,7 +40,7 @@ namespace NeoCortexApi.Entities
     public class SparseBinaryMatrix : AbstractSparseBinaryMatrix
     {
         /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
+        //private static readonly long serialVersionUID = 1L;
 
         /// <summary>
         /// Holds the matrix with connections between columns and inputs.
@@ -187,7 +187,7 @@ namespace NeoCortexApi.Entities
 
         public override AbstractFlatMatrix<int> set(int index, int value)
         {
-            set(index, value);
+            Set(index, value);
             return (AbstractFlatMatrix<int>)this;
         }
 
@@ -221,7 +221,7 @@ namespace NeoCortexApi.Entities
          * @param object        the object to be indexed.
          */
         //@Override
-        public override AbstractSparseBinaryMatrix set(int value, params int[] coordinates)
+        public override AbstractSparseBinaryMatrix Set(int value, params int[] coordinates)
         {
             back(value, coordinates);
             return this;
@@ -235,11 +235,11 @@ namespace NeoCortexApi.Entities
          * 
          * @return this {@code SparseMatrix} implementation
          */
-        public AbstractSparseBinaryMatrix set(int[] indexes, int[] values)
+        public AbstractSparseBinaryMatrix Set(int[] indexes, int[] values)
         {
             for (int i = 0; i < indexes.Length; i++)
             {
-                set(indexes[i], values[i]);
+                Set(indexes[i], values[i]);
             }
             return this;
         }
