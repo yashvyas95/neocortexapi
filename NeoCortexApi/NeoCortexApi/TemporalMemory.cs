@@ -111,8 +111,8 @@ namespace NeoCortexApi
         public ComputeCycle Compute(Connections connections, int[] activeColumns, bool learn)
         {
             ComputeCycle cycle = new ComputeCycle();
-            activateCells(connections, cycle, activeColumns, learn);
-            activateDendrites(connections, cycle, learn);
+            ActivateCells(connections, cycle, activeColumns, learn);
+            ActivateDendrites(connections, cycle, learn);
 
             return cycle;
         }
@@ -138,7 +138,7 @@ namespace NeoCortexApi
          * @param learn
          */
 
-        public void activateCells(Connections conn, ComputeCycle cycle, int[] activeColumnIndices, bool learn)
+        public void ActivateCells(Connections conn, ComputeCycle cycle, int[] activeColumnIndices, bool learn)
         {
             ColumnData columnData = new ColumnData();
 
@@ -179,7 +179,7 @@ namespace NeoCortexApi
                     // If there some active segment already...
                     if (columnData.activeSegments != null && columnData.activeSegments.Count > 0)
                     {
-                        List<Cell> cellsToAdd = activatePredictedColumn(conn, columnData.activeSegments,
+                        List<Cell> cellsToAdd = ActivatePredictedColumn(conn, columnData.activeSegments,
                             columnData.matchingSegments, prevActiveCells, prevWinnerCells,
                                 permanenceIncrement, permanenceDecrement, learn);
 
@@ -216,7 +216,7 @@ namespace NeoCortexApi
                 {
                     if (learn)
                     {
-                        punishPredictedColumn(conn, columnData.activeSegments, columnData.matchingSegments,
+                        PunishPredictedColumn(conn, columnData.activeSegments, columnData.matchingSegments,
                             prevActiveCells, prevWinnerCells, conn.getPredictedSegmentDecrement());
                     }
                 }
@@ -239,7 +239,7 @@ namespace NeoCortexApi
          * @param learn    If true, segment activations will be recorded. This information is used
          *                 during segment cleanup.
          */
-        public void activateDendrites(Connections conn, ComputeCycle cycle, bool learn)
+        public void ActivateDendrites(Connections conn, ComputeCycle cycle, bool learn)
         {
             SegmentActivity activity = conn.computeActivity(cycle.activeCells, conn.getConnectedPermanence());
 
@@ -303,7 +303,7 @@ namespace NeoCortexApi
          * synapses don't grow to the currently active cells in the next time step.
          */
 
-        public void reset(Connections connections)
+        public void Reset(Connections connections)
         {
             connections.getActiveCells().Clear();
             connections.getWinnerCells().Clear();
@@ -336,7 +336,7 @@ namespace NeoCortexApi
          * @return A list of predicted cells that will be added to active cells and winner
          *         cells.
          */
-        public List<Cell> activatePredictedColumn(Connections conn, List<DistalDendrite> activeSegments,
+        public List<Cell> ActivatePredictedColumn(Connections conn, List<DistalDendrite> activeSegments,
             List<DistalDendrite> matchingSegments, ICollection<Cell> prevActiveCells, ICollection<Cell> prevWinnerCells,
                 double permanenceIncrement, double permanenceDecrement, bool learn)
         {
@@ -485,7 +485,7 @@ namespace NeoCortexApi
          *                                          are decremented during learning.
          * @param predictedSegmentDecrement         Amount by which segments are punished for incorrect predictions
          */
-        public void punishPredictedColumn(Connections conn, List<DistalDendrite> activeSegments,
+        public void PunishPredictedColumn(Connections conn, List<DistalDendrite> activeSegments,
             List<DistalDendrite> matchingSegments, ICollection<Cell> prevActiveCells, ICollection<Cell> prevWinnerCells,
                double predictedSegmentDecrement)
         {

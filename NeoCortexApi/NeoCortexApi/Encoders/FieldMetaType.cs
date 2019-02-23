@@ -60,7 +60,7 @@ namespace NeoCortexApi.Encoders
          * String representation to be used when a display
          * String is required.
          */
-        private String m_FieldTypeString;
+        private string m_FieldTypeString;
 
         /** Private constructor */
         private FieldMetaType(String s)
@@ -72,7 +72,7 @@ namespace NeoCortexApi.Encoders
          * Returns the {@link Encoder} matching this field type.
          * @return
          */
-        public EncoderBase newEncoder()
+        public EncoderBase NewEncoder()
         {
             throw new NotImplementedException();
             //switch (this.m_FieldTypeString)
@@ -128,7 +128,7 @@ namespace NeoCortexApi.Encoders
          * Returns the display string
          * @return the display string
          */
-        public String display()
+        public string Display()
         {
             return m_FieldTypeString;
         }
@@ -140,7 +140,7 @@ namespace NeoCortexApi.Encoders
          * @param s  the type in string form
          * @return the FieldMetaType indicated or the default: {@link FieldMetaType#FLOAT}.
          */
-        public static FieldMetaType fromString(string s)
+        public static FieldMetaType FromString(string s)
         {
             if (String.IsNullOrEmpty(s))
                 throw new ArgumentException();

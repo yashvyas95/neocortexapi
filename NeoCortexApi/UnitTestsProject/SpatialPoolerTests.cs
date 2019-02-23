@@ -165,7 +165,7 @@ namespace UnitTestsProject
             int[] activeArray = new int[] { 0, 0, 0, 0, 0 };
             for (int i = 0; i < 20; i++)
             {
-                mock.compute(mem, inputVector, activeArray, true);
+                mock.Compute(mem, inputVector, activeArray, true);
             }
 
             for (int i = 0; i < mem.getNumColumns(); i++)
@@ -208,7 +208,7 @@ namespace UnitTestsProject
             int[] activeArray = new int[] { 0, 0, 0, 0, 0 };
             for (int i = 0; i < 20; i++)
             {
-                mock.compute(mem, inputVector, activeArray, true);
+                mock.Compute(mem, inputVector, activeArray, true);
             }
 
             for (int i = 0; i < mem.getNumColumns(); i++)
@@ -244,7 +244,7 @@ namespace UnitTestsProject
             sp.init(cn);
 
             int[] activeArray = new int[nColumns];
-            sp.compute(cn, new int[inputSize], activeArray, true);
+            sp.Compute(cn, new int[inputSize], activeArray, true);
 
             Assert.IsTrue(3 == activeArray.Count(i => i > 0));//, ArrayUtils.INT_GREATER_THAN_0).length);
         }
@@ -274,7 +274,7 @@ namespace UnitTestsProject
             sp.init(cn);
 
             int[] activeArray = new int[nColumns];
-            sp.compute(cn, new int[inputSize], activeArray, true);
+            sp.Compute(cn, new int[inputSize], activeArray, true);
 
             Assert.IsTrue(0 == activeArray.Count(i => i > 0));//, ArrayUtils.INT_GREATER_THAN_0).length);
         }
@@ -305,7 +305,7 @@ namespace UnitTestsProject
             cn.InhibitionRadius = 2;
 
             int[] activeArray = new int[nColumns];
-            sp.compute(cn, new int[inputSize], activeArray, true);
+            sp.Compute(cn, new int[inputSize], activeArray, true);
            
             Assert.IsTrue(6 == activeArray.Count(i => i > 0));//, ArrayUtils.INT_GREATER_THAN_0).length);
         }
@@ -335,7 +335,7 @@ namespace UnitTestsProject
             sp.init(cn);
 
             int[] activeArray = new int[nColumns];
-            sp.compute(cn, new int[inputSize], activeArray, true);
+            sp.Compute(cn, new int[inputSize], activeArray, true);
 
             Assert.IsTrue(0 == activeArray.Count(i => i > 0));//, ArrayUtils.INT_GREATER_THAN_0).length);
         }
@@ -363,7 +363,7 @@ namespace UnitTestsProject
             int[] inputVector = { 1, 1, 1, 1, 1 };
             int[] activeArray = { 0, 0, 0 };
             int[] expOutput = { 1, 1, 1 };// { 2, 1, 0 }; This was used originally on Linux with JAVA and Pyhton
-            sp.compute(cn, inputVector, activeArray, true);
+            sp.Compute(cn, inputVector, activeArray, true);
 
             double[] boostedOverlaps = cn.BoostedOverlaps;
             int[] overlaps = cn.Overlaps;
@@ -417,7 +417,7 @@ namespace UnitTestsProject
 
             int[] activeArray = new int[2048];
 
-            sp.compute(mem, inputVector, activeArray, true);
+            sp.Compute(mem, inputVector, activeArray, true);
 
         }
 
@@ -468,7 +468,7 @@ namespace UnitTestsProject
 
             int[] activeArray = new int[2048];
 
-            sp.compute(mem, inputVector, activeArray, true);
+            sp.Compute(mem, inputVector, activeArray, true);
 
             int[] real = activeArray.IndexWhere(i => i > 0).ToArray();
 
@@ -494,25 +494,25 @@ namespace UnitTestsProject
             // Column [2] has dutycycle=0. It means it has never learned anything.
             mem.updateActiveDutyCycles(new double[] { 0.5, 0.1, 0, 0.2, 0.4, 0 });
             int[] activeColumns = new int[] { 0, 1, 2, 4 };
-            int[] stripped = sp.stripUnlearnedColumns(mem, activeColumns);
+            int[] stripped = sp.StripUnlearnedColumns(mem, activeColumns);
             int[] trueStripped = new int[] { 0, 1, 4 };
             Assert.IsTrue(trueStripped.SequenceEqual(stripped));
 
             mem.updateActiveDutyCycles(new double[] { 0.9, 0, 0, 0, 0.4, 0.3 });
             activeColumns = ArrayUtils.range(0, 6);
-            stripped = sp.stripUnlearnedColumns(mem, activeColumns);
+            stripped = sp.StripUnlearnedColumns(mem, activeColumns);
             trueStripped = new int[] { 0, 4, 5 };
             Assert.IsTrue(trueStripped.SequenceEqual(stripped));
 
             mem.updateActiveDutyCycles(new double[] { 0, 0, 0, 0, 0, 0 });
             activeColumns = ArrayUtils.range(0, 6);
-            stripped = sp.stripUnlearnedColumns(mem, activeColumns);
+            stripped = sp.StripUnlearnedColumns(mem, activeColumns);
             trueStripped = new int[] { };
             Assert.IsTrue(trueStripped.SequenceEqual(stripped));
 
             mem.updateActiveDutyCycles(new double[] { 1, 1, 1, 1, 1, 1 });
             activeColumns = ArrayUtils.range(0, 6);
-            stripped = sp.stripUnlearnedColumns(mem, activeColumns);
+            stripped = sp.StripUnlearnedColumns(mem, activeColumns);
             trueStripped = ArrayUtils.range(0, 6);
             Assert.IsTrue(trueStripped.SequenceEqual(stripped));
         }
@@ -527,10 +527,10 @@ namespace UnitTestsProject
             parameters.setInputDimensions(new int[] { 12 });
             initSP();
 
-            Assert.IsTrue(1 == sp.mapColumn(mem, 0));
-            Assert.IsTrue(4 == sp.mapColumn(mem, 1));
-            Assert.IsTrue(7 == sp.mapColumn(mem, 2));
-            Assert.IsTrue(10 == sp.mapColumn(mem, 3));
+            Assert.IsTrue(1 == sp.MapColumn(mem, 0));
+            Assert.IsTrue(4 == sp.MapColumn(mem, 1));
+            Assert.IsTrue(7 == sp.MapColumn(mem, 2));
+            Assert.IsTrue(10 == sp.MapColumn(mem, 3));
 
             // Test 1D with same dimension of columns and inputs
             setupParameters();
@@ -538,10 +538,10 @@ namespace UnitTestsProject
             parameters.setInputDimensions(new int[] { 4 });
             initSP();
 
-            Assert.IsTrue(0 == sp.mapColumn(mem, 0));
-            Assert.IsTrue(1 == sp.mapColumn(mem, 1));
-            Assert.IsTrue(2 == sp.mapColumn(mem, 2));
-            Assert.IsTrue(3 == sp.mapColumn(mem, 3));
+            Assert.IsTrue(0 == sp.MapColumn(mem, 0));
+            Assert.IsTrue(1 == sp.MapColumn(mem, 1));
+            Assert.IsTrue(2 == sp.MapColumn(mem, 2));
+            Assert.IsTrue(3 == sp.MapColumn(mem, 3));
 
             // Test 1D with dimensions of length 1
             setupParameters();
@@ -549,7 +549,7 @@ namespace UnitTestsProject
             parameters.setInputDimensions(new int[] { 1 });
             initSP();
 
-            Assert.IsTrue(0 == sp.mapColumn(mem, 0));
+            Assert.IsTrue(0 == sp.MapColumn(mem, 0));
 
             // Test 2D
             setupParameters();
@@ -557,11 +557,11 @@ namespace UnitTestsProject
             parameters.setInputDimensions(new int[] { 36, 12 });
             initSP();
 
-            Assert.IsTrue(13 == sp.mapColumn(mem, 0));
-            Assert.IsTrue(49 == sp.mapColumn(mem, 4));
-            Assert.IsTrue(52 == sp.mapColumn(mem, 5));
-            Assert.IsTrue(58 == sp.mapColumn(mem, 7));
-            Assert.IsTrue(418 == sp.mapColumn(mem, 47));
+            Assert.IsTrue(13 == sp.MapColumn(mem, 0));
+            Assert.IsTrue(49 == sp.MapColumn(mem, 4));
+            Assert.IsTrue(52 == sp.MapColumn(mem, 5));
+            Assert.IsTrue(58 == sp.MapColumn(mem, 7));
+            Assert.IsTrue(418 == sp.MapColumn(mem, 47));
 
             // Test 2D with some input dimensions smaller than column dimensions.
             setupParameters();
@@ -569,9 +569,9 @@ namespace UnitTestsProject
             parameters.setInputDimensions(new int[] { 3, 5 });
             initSP();
 
-            Assert.IsTrue(0 == sp.mapColumn(mem, 0));
-            Assert.IsTrue(4 == sp.mapColumn(mem, 3));
-            Assert.IsTrue(14 == sp.mapColumn(mem, 15));
+            Assert.IsTrue(0 == sp.MapColumn(mem, 0));
+            Assert.IsTrue(4 == sp.MapColumn(mem, 3));
+            Assert.IsTrue(14 == sp.MapColumn(mem, 15));
         }
 
         [TestMethod]
@@ -591,21 +591,21 @@ namespace UnitTestsProject
 
             // Test without wrapAround and potentialPct = 1
             int[] expected = new int[] { 0, 1, 2, 3 };
-            int[] mask = sp.mapPotential(mem, 0, false);
+            int[] mask = sp.MapPotential(mem, 0, false);
             Assert.IsTrue(expected.SequenceEqual(mask));
 
             expected = new int[] { 5, 6, 7, 8, 9 };
-            mask = sp.mapPotential(mem, 2, false);
+            mask = sp.MapPotential(mem, 2, false);
             Assert.IsTrue(expected.SequenceEqual(mask));
 
             // Test with wrapAround and potentialPct = 1
             mem.setWrapAround(true);
             expected = new int[] { 0, 1, 2, 3, 11 };
-            mask = sp.mapPotential(mem, 0, true);
+            mask = sp.MapPotential(mem, 0, true);
             Assert.IsTrue(expected.SequenceEqual(mask));
 
             expected = new int[] { 0, 8, 9, 10, 11 };
-            mask = sp.mapPotential(mem, 3, true);
+            mask = sp.MapPotential(mem, 3, true);
             Assert.IsTrue(expected.SequenceEqual(mask));
 
             // Test with wrapAround and potentialPct < 1
@@ -614,7 +614,7 @@ namespace UnitTestsProject
             initSP();
 
             int[] supersetMask = new int[] { 0, 1, 2, 3, 11 };
-            mask = sp.mapPotential(mem, 0, true);
+            mask = sp.MapPotential(mem, 0, true);
             Assert.IsTrue(mask.Length == 3);
             List<int> unionList = new List<int>(supersetMask);
             unionList.AddRange(mask);
@@ -637,7 +637,7 @@ namespace UnitTestsProject
             initSP();
 
             //Test without wrapAround
-            int[] mask = sp.mapPotential(mem, 0, false);
+            int[] mask = sp.MapPotential(mem, 0, false);
             List<int> trueIndices = new List<int>(new int[] { 0, 1, 2, 12, 13, 14, 24, 25, 26 });
             List<int> maskSet = new List<int>(mask);
             Assert.IsTrue(trueIndices.SequenceEqual(maskSet));
@@ -645,7 +645,7 @@ namespace UnitTestsProject
             trueIndices.Clear();
             maskSet.Clear();
             trueIndices.AddRange(new int[] { 6, 7, 8, 18, 19, 20, 30, 31, 32 });
-            mask = sp.mapPotential(mem, 2, false);
+            mask = sp.MapPotential(mem, 2, false);
             maskSet.AddRange(mask);
             Assert.IsTrue(trueIndices.SequenceEqual(maskSet));
 
@@ -660,7 +660,7 @@ namespace UnitTestsProject
                         24, 25, 26, 27, 35,
                         36, 37, 38, 39, 47,
                         60, 61, 62, 63, 71 });
-            mask = sp.mapPotential(mem, 0, true);
+            mask = sp.MapPotential(mem, 0, true);
             maskSet.AddRange(mask);
             Assert.IsTrue(trueIndices.SequenceEqual(maskSet));
 
@@ -672,7 +672,7 @@ namespace UnitTestsProject
                         24, 32, 33, 34, 35,
                         36, 44, 45, 46, 47,
                         60, 68, 69, 70, 71 });
-            mask = sp.mapPotential(mem, 3, true);
+            mask = sp.MapPotential(mem, 3, true);
             maskSet.AddRange(mask);
             Assert.IsTrue(trueIndices.SequenceEqual(maskSet));
         }
@@ -690,7 +690,7 @@ namespace UnitTestsProject
 
             //Test without wrapAround and potentialPct = 1
             int[] expectedMask = new int[] { 0 };
-            int[] mask = sp.mapPotential(mem, 0, false);
+            int[] mask = sp.MapPotential(mem, 0, false);
             List<int> trueIndices = new List<int>(expectedMask);
             List<int> maskSet = new List<int>(mask);
 
@@ -766,7 +766,7 @@ namespace UnitTestsProject
             mem.InhibitionRadius = 5;
             double trueDensity = mem.LocalAreaDensity;
             //inhibitColumnsGlobal.inhibitColumns(mem, overlaps);
-            mock.inhibitColumns(mem, overlaps);
+            mock.InhibitColumns(mem, overlaps);
             Assert.IsTrue(globalCalled);
             Assert.IsTrue(!localCalled);
             Assert.IsTrue(Math.Abs(trueDensity - _density) <= .01d);
@@ -783,7 +783,7 @@ namespace UnitTestsProject
             mem.setTieBreaker(tieBreaker);
             overlaps = ArrayUtils.sample(mem.getNumColumns(), mem.getRandom());
             //inhibitColumnsLocal.inhibitColumns(mem, overlaps);
-            mock.inhibitColumns(mem, overlaps);
+            mock.InhibitColumns(mem, overlaps);
             trueDensity = mem.LocalAreaDensity;
             Assert.IsTrue(!globalCalled);
             Assert.IsTrue(localCalled);
@@ -805,7 +805,7 @@ namespace UnitTestsProject
             mem.setTieBreaker(tieBreaker);
             overlaps = ArrayUtils.sample(mem.getNumColumns(), mem.getRandom());
             //inhibitColumnsLocal.inhibitColumns(mem, overlaps);
-            mock.inhibitColumns(mem, overlaps);
+            mock.InhibitColumns(mem, overlaps);
             trueDensity = 3.0 / 81.0;
             Assert.IsTrue(!globalCalled);
             Assert.IsTrue(localCalled);
@@ -822,7 +822,7 @@ namespace UnitTestsProject
             mem.setTieBreaker(tieBreaker);
             overlaps = ArrayUtils.sample(mem.getNumColumns(), mem.getRandom());
             //inhibitColumnsLocal.inhibitColumns(mem, overlaps);
-            mock.inhibitColumns(mem, overlaps);
+            mock.InhibitColumns(mem, overlaps);
             trueDensity = 0.5;
             Assert.IsTrue(!globalCalled);
             Assert.IsTrue(localCalled);
@@ -850,7 +850,7 @@ namespace UnitTestsProject
             mem.setActiveDutyCycles(activeDutyCycles);
 
             double[] trueBoostFactors = new double[] { 1, 1, 1, 1, 1, 1 };
-            sp.updateBoostFactors(mem);
+            sp.UpdateBoostFactors(mem);
             double[] boostFactors = mem.BoostFactors;
             for (int i = 0; i < boostFactors.Length; i++)
             {
@@ -861,7 +861,7 @@ namespace UnitTestsProject
             minActiveDutyCycles = new double[] { 0.1, 0.3, 0.02, 0.04, 0.7, 0.12 };
             mem.setMinActiveDutyCycles(minActiveDutyCycles);
             ArrayUtils.fillArray(mem.BoostFactors, 0);
-            sp.updateBoostFactors(mem);
+            sp.UpdateBoostFactors(mem);
             boostFactors = mem.BoostFactors;
             for (int i = 0; i < boostFactors.Length; i++)
             {
@@ -874,7 +874,7 @@ namespace UnitTestsProject
             activeDutyCycles = new double[] { 0.01, 0.02, 0.002, 0.003, 0.07, 0.012 };
             mem.setActiveDutyCycles(activeDutyCycles);
             trueBoostFactors = new double[] { 9.1, 9.1, 9.1, 9.1, 9.1, 9.1 };
-            sp.updateBoostFactors(mem);
+            sp.UpdateBoostFactors(mem);
             boostFactors = mem.BoostFactors;
             for (int i = 0; i < boostFactors.Length; i++)
             {
@@ -887,7 +887,7 @@ namespace UnitTestsProject
             ArrayUtils.fillArray(activeDutyCycles, 0);
             mem.setActiveDutyCycles(activeDutyCycles);
             ArrayUtils.fillArray(trueBoostFactors, 10.0);
-            sp.updateBoostFactors(mem);
+            sp.UpdateBoostFactors(mem);
             boostFactors = mem.BoostFactors;
             for (int i = 0; i < boostFactors.Length; i++)
             {
@@ -905,7 +905,7 @@ namespace UnitTestsProject
             mem.GlobalInhibition = true;
             mem.setColumnDimensions(new int[] { 57, 31, 2 });
             // If global inhibition is set, then all columns in the row are inhibited.
-            sp.updateInhibitionRadius(mem);
+            sp.UpdateInhibitionRadius(mem);
             Assert.IsTrue(57 == mem.InhibitionRadius);
 
             ////////////
@@ -926,7 +926,7 @@ namespace UnitTestsProject
             //};
             mem.GlobalInhibition = false;
             sp = mock;
-            sp.updateInhibitionRadius(mem);
+            sp.UpdateInhibitionRadius(mem);
             Assert.IsTrue(6 == mem.InhibitionRadius);
 
             //////////////
@@ -948,7 +948,7 @@ namespace UnitTestsProject
             //};
             mem.GlobalInhibition = false;
             sp = mock;
-            sp.updateInhibitionRadius(mem);
+            sp.UpdateInhibitionRadius(mem);
             Assert.IsTrue(1 == mem.InhibitionRadius);
 
             /////////////
@@ -970,7 +970,7 @@ namespace UnitTestsProject
             mem.GlobalInhibition = false;
             sp = mock;
             //((2 * 2.4) - 1) / 2.0 => round up
-            sp.updateInhibitionRadius(mem);
+            sp.UpdateInhibitionRadius(mem);
             Assert.IsTrue(2 == mem.InhibitionRadius);
 
             //...
@@ -978,7 +978,7 @@ namespace UnitTestsProject
 
             mem.GlobalInhibition = true;
 
-            sp.updateInhibitionRadius(mem);
+            sp.UpdateInhibitionRadius(mem);
 
             // max dim of columns
             Assert.IsTrue(57 == mem.InhibitionRadius);
@@ -988,7 +988,7 @@ namespace UnitTestsProject
             mem.GlobalInhibition = false;
 
             mem.setInputDimensions(new int[] { 5, 10, 2 });
-            sp.updateInhibitionRadius(mem);
+            sp.UpdateInhibitionRadius(mem);
         }
 
         [TestMethod]
@@ -999,32 +999,32 @@ namespace UnitTestsProject
 
             mem.setColumnDimensions(new int[] { 2, 2, 2, 2 });
             mem.setInputDimensions(new int[] { 4, 4, 4, 4 });
-            Assert.IsTrue(0.5 == sp.avgColumnsPerInput(mem));
+            Assert.IsTrue(0.5 == sp.AvgColumnsPerInput(mem));
 
             mem.setColumnDimensions(new int[] { 2, 2, 2, 2 });
             mem.setInputDimensions(new int[] { 7, 5, 1, 3 });
             double trueAvgColumnPerInput = (2.0 / 7 + 2.0 / 5 + 2.0 / 1 + 2 / 3.0) / 4.0d;
-            Assert.IsTrue(trueAvgColumnPerInput == sp.avgColumnsPerInput(mem));
+            Assert.IsTrue(trueAvgColumnPerInput == sp.AvgColumnsPerInput(mem));
 
             mem.setColumnDimensions(new int[] { 3, 3 });
             mem.setInputDimensions(new int[] { 3, 3 });
             trueAvgColumnPerInput = 1;
-            Assert.IsTrue(trueAvgColumnPerInput == sp.avgColumnsPerInput(mem));
+            Assert.IsTrue(trueAvgColumnPerInput == sp.AvgColumnsPerInput(mem));
 
             mem.setColumnDimensions(new int[] { 25 });
             mem.setInputDimensions(new int[] { 5 });
             trueAvgColumnPerInput = 5;
-            Assert.IsTrue(trueAvgColumnPerInput == sp.avgColumnsPerInput(mem));
+            Assert.IsTrue(trueAvgColumnPerInput == sp.AvgColumnsPerInput(mem));
 
             mem.setColumnDimensions(new int[] { 3, 3, 3, 5, 5, 6, 6 });
             mem.setInputDimensions(new int[] { 3, 3, 3, 5, 5, 6, 6 });
             trueAvgColumnPerInput = 1;
-            Assert.IsTrue(trueAvgColumnPerInput == sp.avgColumnsPerInput(mem));
+            Assert.IsTrue(trueAvgColumnPerInput == sp.AvgColumnsPerInput(mem));
 
             mem.setColumnDimensions(new int[] { 3, 6, 9, 12 });
             mem.setInputDimensions(new int[] { 3, 3, 3, 3 });
             trueAvgColumnPerInput = 2.5;
-            Assert.IsTrue(trueAvgColumnPerInput == sp.avgColumnsPerInput(mem));
+            Assert.IsTrue(trueAvgColumnPerInput == sp.AvgColumnsPerInput(mem));
         }
 
         [TestMethod]
@@ -1036,7 +1036,7 @@ namespace UnitTestsProject
             int[] inputDimensions = new int[] { 4, 4, 2, 5 };
             mem.setInputDimensions(inputDimensions);
             mem.setColumnDimensions(new int[] { 5 });
-            sp.initMatrices(mem);
+            sp.InitMatrices(mem);
 
             List<int> connected = new List<int>();
             connected.Add(mem.getInputMatrix().computeIndex(new int[] { 1, 0, 1, 0 }, false));
@@ -1100,7 +1100,7 @@ namespace UnitTestsProject
             double[] trueAvgConnectedSpan = new double[] { 11.0 / 4d, 6.0 / 4d, 14.0 / 4d, 15.0 / 4d, 0d };
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
-                double connectedSpan = sp.getAvgSpanOfConnectedSynapsesForColumn(mem, i);
+                double connectedSpan = sp.GetAvgSpanOfConnectedSynapsesForColumn(mem, i);
                 Assert.IsTrue(trueAvgConnectedSpan[i] == connectedSpan);
             }
         }
@@ -1162,7 +1162,7 @@ namespace UnitTestsProject
             }
 
             //Execute method being tested
-            sp.bumpUpWeakColumns(mem);
+            sp.BumpUpWeakColumns(mem);
 
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
@@ -1188,7 +1188,7 @@ namespace UnitTestsProject
             mem.setActiveDutyCycles(new double[] { 0.9, 0.3, 0.5, 0.7, 0.1, 0.01, 0.08, 0.12 });
             mem.setMinPctActiveDutyCycles(0.1);
             mem.setMinPctOverlapDutyCycles(0.2);
-            sp.updateMinDutyCyclesLocal(mem);
+            sp.UpdateMinDutyCyclesLocal(mem);
 
             double[] resultMinActiveDutyCycles = mem.getMinActiveDutyCycles();
             double[] expected0 = { 0.09, 0.09, 0.07, 0.07, 0.07, 0.01, 0.012, 0.012 };
@@ -1224,7 +1224,7 @@ namespace UnitTestsProject
             mem.setActiveDutyCycles(new double[] { 0.9, 0.3, 0.5, 0.7, 0.1, 0.01, 0.08, 0.12 });
             mem.setMinPctActiveDutyCycles(0.1);
             mem.setMinPctOverlapDutyCycles(0.2);
-            sp.updateMinDutyCyclesLocal(mem);
+            sp.UpdateMinDutyCyclesLocal(mem);
 
             double[] resultMinActiveDutyCycles2 = mem.getMinActiveDutyCycles();
             double[] expected2 = { 0.09, 0.09, 0.07, 0.07, 0.07, 0.01, 0.012, 0.09 };
@@ -1263,7 +1263,7 @@ namespace UnitTestsProject
             mem.setOverlapDutyCycles(new double[] { 0.06, 1, 3, 6, 0.5 });
             mem.setActiveDutyCycles(new double[] { 0.6, 0.07, 0.5, 0.4, 0.3 });
 
-            sp.updateMinDutyCyclesGlobal(mem);
+            sp.UpdateMinDutyCyclesGlobal(mem);
             double[] trueMinActiveDutyCycles = new double[mem.getNumColumns()];
             ArrayUtils.fillArray(trueMinActiveDutyCycles, 0.02 * 0.6);
             double[] trueMinOverlapDutyCycles = new double[mem.getNumColumns()];
@@ -1280,7 +1280,7 @@ namespace UnitTestsProject
             mem.setMinPctActiveDutyCycles(0.03);
             mem.setOverlapDutyCycles(new double[] { 0.86, 2.4, 0.03, 1.6, 1.5 });
             mem.setActiveDutyCycles(new double[] { 0.16, 0.007, 0.15, 0.54, 0.13 });
-            sp.updateMinDutyCyclesGlobal(mem);
+            sp.UpdateMinDutyCyclesGlobal(mem);
             ArrayUtils.fillArray(trueMinOverlapDutyCycles, 0.015 * 2.4);
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
@@ -1293,7 +1293,7 @@ namespace UnitTestsProject
             mem.setMinPctActiveDutyCycles(0.03);
             mem.setOverlapDutyCycles(new double[5]);
             mem.setActiveDutyCycles(new double[5]);
-            sp.updateMinDutyCyclesGlobal(mem);
+            sp.UpdateMinDutyCyclesGlobal(mem);
             ArrayUtils.fillArray(trueMinOverlapDutyCycles, 0);
             ArrayUtils.fillArray(trueMinActiveDutyCycles, 0);
             for (int i = 0; i < mem.getNumColumns(); i++)
@@ -1315,29 +1315,29 @@ namespace UnitTestsProject
 
             mem.setUpdatePeriod(50);
             mem.setIterationNum(1);
-            Assert.IsFalse(sp.isUpdateRound(mem));
+            Assert.IsFalse(sp.IsUpdateRound(mem));
             mem.setIterationNum(39);
-            Assert.IsFalse(sp.isUpdateRound(mem));
+            Assert.IsFalse(sp.IsUpdateRound(mem));
             mem.setIterationNum(50);
-            Assert.IsTrue(sp.isUpdateRound(mem));
+            Assert.IsTrue(sp.IsUpdateRound(mem));
             mem.setIterationNum(1009);
-            Assert.IsFalse(sp.isUpdateRound(mem));
+            Assert.IsFalse(sp.IsUpdateRound(mem));
             mem.setIterationNum(1250);
-            Assert.IsTrue(sp.isUpdateRound(mem));
+            Assert.IsTrue(sp.IsUpdateRound(mem));
 
             mem.setUpdatePeriod(125);
             mem.setIterationNum(0);
-            Assert.IsTrue(sp.isUpdateRound(mem));
+            Assert.IsTrue(sp.IsUpdateRound(mem));
             mem.setIterationNum(200);
-            Assert.IsFalse(sp.isUpdateRound(mem));
+            Assert.IsFalse(sp.IsUpdateRound(mem));
             mem.setIterationNum(249);
-            Assert.IsFalse(sp.isUpdateRound(mem));
+            Assert.IsFalse(sp.IsUpdateRound(mem));
             mem.setIterationNum(1330);
-            Assert.IsFalse(sp.isUpdateRound(mem));
+            Assert.IsFalse(sp.IsUpdateRound(mem));
             mem.setIterationNum(1249);
-            Assert.IsFalse(sp.isUpdateRound(mem));
+            Assert.IsFalse(sp.IsUpdateRound(mem));
             mem.setIterationNum(1375);
-            Assert.IsTrue(sp.isUpdateRound(mem));
+            Assert.IsTrue(sp.IsUpdateRound(mem));
 
         }
 
@@ -1398,7 +1398,7 @@ namespace UnitTestsProject
             int[] inputVector = new int[] { 1, 0, 0, 1, 1, 0, 1, 0 };
             int[] activeColumns = new int[] { 0, 1, 2 };
 
-            sp.adaptSynapses(mem, inputVector, activeColumns);
+            sp.AdaptSynapses(mem, inputVector, activeColumns);
 
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
@@ -1442,7 +1442,7 @@ namespace UnitTestsProject
                 mem.getColumn(i).setProximalPermanences(mem, permanences[i]);
             }
 
-            sp.adaptSynapses(mem, inputVector, activeColumns);
+            sp.AdaptSynapses(mem, inputVector, activeColumns);
 
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
@@ -1502,7 +1502,7 @@ namespace UnitTestsProject
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
                 double[] perm = mem.getPotentialPools().get(i).getSparsePermanences();
-                sp.raisePermanenceToThreshold(mem, perm, indices);
+                sp.RaisePermanenceToThreshold(mem, perm, indices);
 
                 for (int j = 0; j < perm.Length; j++)
                 {
@@ -1552,7 +1552,7 @@ namespace UnitTestsProject
             for (int i = 0; i < mem.getNumColumns(); i++)
             {
                 mem.getColumn(i).setProximalPermanences(mem, permanences[i]);
-                sp.updatePermanencesForColumn(mem, permanences[i], mem.getColumn(i), connectedDense[i], true);
+                sp.UpdatePermanencesForColumn(mem, permanences[i], mem.getColumn(i), connectedDense[i], true);
                 int[] dense = mem.getColumn(i).getProximalDendrite().getConnectedSynapsesDense(mem);
                 trueConnectedSynapses[i].ArrToString().SequenceEqual(dense.ArrToString());
             }
@@ -1596,9 +1596,9 @@ namespace UnitTestsProject
             }
 
             int[] inputVector = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            int[] overlaps = sp.calculateOverlap(mem, inputVector);
+            int[] overlaps = sp.CalculateOverlap(mem, inputVector);
             int[] trueOverlaps = new int[5];
-            double[] overlapsPct = sp.calculateOverlapPct(mem, overlaps);
+            double[] overlapsPct = sp.CalculateOverlapPct(mem, overlaps);
             double[] trueOverlapsPct = new double[5];
             Assert.IsTrue(trueOverlaps.SequenceEqual(overlaps));
             Assert.IsTrue(trueOverlapsPct.SequenceEqual(overlapsPct));
@@ -1632,9 +1632,9 @@ namespace UnitTestsProject
             }
 
             inputVector = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            overlaps = sp.calculateOverlap(mem, inputVector);
+            overlaps = sp.CalculateOverlap(mem, inputVector);
             trueOverlaps = new int[] { 10, 8, 6, 4, 2 };
-            overlapsPct = sp.calculateOverlapPct(mem, overlaps);
+            overlapsPct = sp.CalculateOverlapPct(mem, overlaps);
             trueOverlapsPct = new double[] { 1, 1, 1, 1, 1 };
             Assert.IsTrue(trueOverlaps.SequenceEqual(overlaps));
             Assert.IsTrue(trueOverlapsPct.SequenceEqual(overlapsPct));
@@ -1669,11 +1669,11 @@ namespace UnitTestsProject
 
             inputVector = new int[10];
             inputVector[9] = 1;
-            overlaps = sp.calculateOverlap(mem, inputVector);
+            overlaps = sp.CalculateOverlap(mem, inputVector);
             trueOverlaps = new int[] { 1, 1, 1, 1, 1 };
             Assert.IsTrue(trueOverlaps.SequenceEqual(overlaps));
 
-            overlapsPct = sp.calculateOverlapPct(mem, overlaps);
+            overlapsPct = sp.CalculateOverlapPct(mem, overlaps);
             trueOverlapsPct = new double[] { 0.1, 0.125, 1.0 / 6, 0.25, 0.5 };
             Assert.IsTrue(trueOverlapsPct.SequenceEqual(overlapsPct));
 
@@ -1706,9 +1706,9 @@ namespace UnitTestsProject
             }
 
             inputVector = new int[] { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 };
-            overlaps = sp.calculateOverlap(mem, inputVector);
+            overlaps = sp.CalculateOverlap(mem, inputVector);
             trueOverlaps = new int[] { 1, 1, 1, 1, 1 };
-            overlapsPct = sp.calculateOverlapPct(mem, overlaps);
+            overlapsPct = sp.CalculateOverlapPct(mem, overlaps);
             trueOverlapsPct = new double[] { 0.5, 0.5, 0.5, 0.5, 0.5 };
             Assert.IsTrue(trueOverlaps.SequenceEqual(overlaps));
             Assert.IsTrue(trueOverlapsPct.SequenceEqual(overlapsPct));
@@ -1743,14 +1743,14 @@ namespace UnitTestsProject
             mem.setPotentialRadius(2);
             double connectedPct = 1;
             int[] mask = new int[] { 0, 1, 2, 8, 9 };
-            double[] perm = this.sp.initPermanence(mem, mask, 0, connectedPct);
+            double[] perm = this.sp.InitPermanence(mem, mask, 0, connectedPct);
             int numcon = ArrayUtils.valueGreaterCount(mem.getSynPermConnected(), perm);
 
             // Because of connectedPct=1 all 5 specified synapses have to be connected.
             Assert.AreEqual(5, numcon);
 
             connectedPct = 0;
-            perm = this.sp.initPermanence(mem, mask, 0, connectedPct);
+            perm = this.sp.InitPermanence(mem, mask, 0, connectedPct);
             numcon = ArrayUtils.valueGreaterCount(mem.getSynPermConnected(), perm);
             Assert.AreEqual(0, numcon);
 
@@ -1759,7 +1759,7 @@ namespace UnitTestsProject
             mem.NumInputs = 100;
             mask = new int[100];
             for (int i = 0; i < 100; i++) mask[i] = i;
-            double[] perma = this.sp.initPermanence(mem, mask, 0, connectedPct);
+            double[] perma = this.sp.InitPermanence(mem, mask, 0, connectedPct);
             numcon = ArrayUtils.valueGreaterOrEqualCount(mem.getSynPermConnected(), perma);
             Assert.IsTrue(numcon > 0);
             Assert.IsTrue(numcon < mem.NumInputs);
@@ -1811,7 +1811,7 @@ namespace UnitTestsProject
             mem.NumInputs = 10;
             double connectedPct = 1;
             int[] mask = new int[] { 0, 1 };
-            double[] perm = sp.initPermanence(mem, mask, 0, connectedPct);
+            double[] perm = sp.InitPermanence(mem, mask, 0, connectedPct);
             int[] trueConnected = new int[] { 0, 1 };
 
             //Condition<?> cond = new Condition.Adapter<Object>()
@@ -1825,19 +1825,19 @@ namespace UnitTestsProject
 
             connectedPct = 1;
             mask = new int[] { 4, 5, 6 };
-            perm = sp.initPermanence(mem, mask, 0, connectedPct);
+            perm = sp.InitPermanence(mem, mask, 0, connectedPct);
             trueConnected = new int[] { 4, 5, 6 };
             ArrayUtils.toDoubleArray(trueConnected).SequenceEqual(perm.Where(d => d > 0));
 
             connectedPct = 1;
             mask = new int[] { 8, 9 };
-            perm = sp.initPermanence(mem, mask, 0, connectedPct);
+            perm = sp.InitPermanence(mem, mask, 0, connectedPct);
             trueConnected = new int[] { 8, 9 };
             ArrayUtils.toDoubleArray(trueConnected).SequenceEqual(perm.Where(d => d > 0));
 
             connectedPct = 1;
             mask = new int[] { 0, 1, 2, 3, 4, 5, 6, 8, 9 };
-            perm = sp.initPermanence(mem, mask, 0, connectedPct);
+            perm = sp.InitPermanence(mem, mask, 0, connectedPct);
             trueConnected = new int[] { 0, 1, 2, 3, 4, 5, 6, 8, 9 };
             ArrayUtils.toDoubleArray(trueConnected).SequenceEqual(perm.Where(d => d > 0));
         }
@@ -1859,7 +1859,7 @@ namespace UnitTestsProject
             ArrayUtils.fillArray(dc, 1000.0);
             double[] newvals = new double[5];
             int period = 1000;
-            double[] newDc = sp.updateDutyCyclesHelper(mem, dc, newvals, period);
+            double[] newDc = sp.UpdateDutyCyclesHelper(mem, dc, newvals, period);
             double[] trueNewDc = new double[] { 999, 999, 999, 999, 999 };
             Assert.IsTrue(trueNewDc.SequenceEqual(newDc));
 
@@ -1868,7 +1868,7 @@ namespace UnitTestsProject
             newvals = new double[5];
             ArrayUtils.fillArray(newvals, 1000);
             period = 1000;
-            newDc = sp.updateDutyCyclesHelper(mem, dc, newvals, period);
+            newDc = sp.UpdateDutyCyclesHelper(mem, dc, newvals, period);
 
             trueNewDc = new double[5];
             Array.Copy(dc, trueNewDc, trueNewDc.Length);
@@ -1879,14 +1879,14 @@ namespace UnitTestsProject
             ArrayUtils.fillArray(dc, 1000.0);
             newvals = new double[] { 2000, 4000, 5000, 6000, 7000 };
             period = 1000;
-            newDc = sp.updateDutyCyclesHelper(mem, dc, newvals, period);
+            newDc = sp.UpdateDutyCyclesHelper(mem, dc, newvals, period);
             trueNewDc = new double[] { 1001, 1003, 1004, 1005, 1006 };
             Assert.IsTrue(trueNewDc.SequenceEqual(newDc));
 
             dc = new double[] { 1000, 800, 600, 400, 2000 };
             newvals = new double[5];
             period = 2;
-            newDc = sp.updateDutyCyclesHelper(mem, dc, newvals, period);
+            newDc = sp.UpdateDutyCyclesHelper(mem, dc, newvals, period);
             trueNewDc = new double[] { 500, 400, 300, 200, 1000 };
             Assert.IsTrue(trueNewDc.SequenceEqual(newDc));
         }
@@ -1901,7 +1901,7 @@ namespace UnitTestsProject
             parameters.setInhibitionRadius(2);
             double density = 0.3;
             double[] overlaps = new double[] { 1, 2, 1, 4, 8/*i=4*/, 3, 12/*i=6*/, 5/*i=7*/, 4, 1 };
-            int[] active = sp.inhibitColumnsGlobal(mem, overlaps, density);
+            int[] active = sp.InhibitColumnsGlobal(mem, overlaps, density);
 
             // See overlaps comments (i=k) above.
             int[] trueActive = new int[] { 4, 6, 7 };
@@ -1916,7 +1916,7 @@ namespace UnitTestsProject
                 overlaps[i] = i * 1.0;
             }
 
-            active = sp.inhibitColumnsGlobal(mem, overlaps, density);
+            active = sp.InhibitColumnsGlobal(mem, overlaps, density);
 
             trueActive = new int[5];
             for (int i = 5; i < 10; i++)
@@ -1942,12 +1942,12 @@ namespace UnitTestsProject
 
             mem.setWrapAround(true);
             int[] trueActive = new int[] { 1, 2, 5, 6, 8, 9 };
-            int[] active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            int[] active = sp.InhibitColumnsLocal(mem, overlaps, density);
             Assert.IsTrue(trueActive.SequenceEqual(active));
 
             mem.setWrapAround(false);
             trueActive = new int[] { 1, 2, 5, 6, 9 };
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
             Assert.IsTrue(trueActive.SequenceEqual(active));
 
             density = 0.5;
@@ -1958,12 +1958,12 @@ namespace UnitTestsProject
 
             mem.setWrapAround(true);
             trueActive = new int[] { 1, 2, 4, 5, 6, 9 };
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
             Assert.IsTrue(trueActive.SequenceEqual(active));
 
             mem.setWrapAround(false);
             trueActive = new int[] { 1, 2, 4, 5, 6, 9 };
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
             Assert.IsTrue(trueActive.SequenceEqual(active));
 
             // Test add to winners
@@ -1975,32 +1975,32 @@ namespace UnitTestsProject
 
             mem.setWrapAround(true);
             trueActive = new int[] { 0, 1, 4, 5 };
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
             Assert.IsTrue(trueActive.SequenceEqual(active));
 
             density = 0.20;
             overlaps = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
             mem.setWrapAround(false);
             trueActive = new int[] { 0, 4, 8 };
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
             Assert.IsTrue(trueActive.SequenceEqual(active));
 
             //overlaps = new double[] { 1, 2, 7, 0.1, 3, 4, 16, 1, 1.5, 1.7 };
             mem.setWrapAround(false);
             density = 0.10;
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
 
             density = 0.20;
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
 
             density = 0.30;
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
 
             density = 0.40;
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
 
             density = 0.50;
-            active = sp.inhibitColumnsLocal(mem, overlaps, density);
+            active = sp.InhibitColumnsLocal(mem, overlaps, density);
         }
 
         //    /**
@@ -2399,7 +2399,7 @@ namespace UnitTestsProject
             sp.init(c);
             try
             {
-                sp.compute(c, new int[misMatchedDims], new int[25], true);
+                sp.Compute(c, new int[misMatchedDims], new int[25], true);
                 //fail();
                 //Assert.Fail();
             }
@@ -2426,7 +2426,7 @@ namespace UnitTestsProject
             sp.init(c);
             try
             {
-                sp.compute(c, new int[matchedDims], new int[25], true);
+                sp.Compute(c, new int[matchedDims], new int[25], true);
             }
             catch (ArgumentException e)
             {

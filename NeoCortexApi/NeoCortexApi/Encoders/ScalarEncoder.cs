@@ -330,7 +330,8 @@ namespace NeoCortexApi.Encoders
                 }
             }
             else
-            {//for non-periodic encoders, the bucket index is the index of the left bit
+            {
+                //for non-periodic encoders, the bucket index is the index of the left bit
                 bucketIdx = minbin;
             }
 

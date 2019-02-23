@@ -354,7 +354,7 @@ namespace NeoCortexApi.Encoders
          *
          * @param sm
          */
-        public void setTopDownMapping(SparseObjectMatrix<int[]> sm)
+        public void SetTopDownMapping(SparseObjectMatrix<int[]> sm)
         {
             this.topDownMapping = sm;
         }
@@ -377,14 +377,14 @@ namespace NeoCortexApi.Encoders
          * @param offset	the offset of the encoded output the specified encoder
          * 					was used to encode.
          */
-        public void addEncoder(EncoderBase<T> parent, String name, EncoderBase<T> child, int offset)
+        public void AddEncoder(EncoderBase<T> parent, String name, EncoderBase<T> child, int offset)
         {
             if (encoders == null)
             {
                 encoders = new Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>>();
             }
 
-            EncoderTuple<T> key = getEncoderTuple(parent);
+            EncoderTuple<T> key = GetEncoderTuple(parent);
             // Insert a new Tuple for the parent if not yet added.
             if (key == null)
             {
@@ -405,7 +405,7 @@ namespace NeoCortexApi.Encoders
          * @param e		the Encoder the return value should contain
          * @return		the {@link Tuple} containing the specified {@link Encoder}
          */
-        public EncoderTuple<T> getEncoderTuple(EncoderBase<T> encoder)
+        public EncoderTuple<T> GetEncoderTuple(EncoderBase<T> encoder)
         {
             if (encoders == null)
             {
@@ -430,16 +430,16 @@ namespace NeoCortexApi.Encoders
          * @param e		the parent {@link Encoder} whose child Encoder Tuples are being returned
          * @return		the list of child {@link Encoder} {@link Tuple}s
          */
-        public List<EncoderTuple<T>> getEncoders(EncoderBase<T> e)
+        public List<EncoderTuple<T>> GetEncoders(EncoderBase<T> e)
         {
-            return getEncoders()[e.getEncoderTuple(e)];
+            return GetEncoders()[e.GetEncoderTuple(e)];
         }
 
         /**
          * Returns the list of {@link Encoder}s
          * @return
          */
-        public Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> getEncoders()
+        public Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> GetEncoders()
         {
             if (encoders == null)
             {
@@ -453,7 +453,7 @@ namespace NeoCortexApi.Encoders
          *
          * @param	encLearningEnabled	true if learning is enabled, false if not
          */
-        public void setLearningEnabled(bool encLearningEnabled)
+        public void SetLearningEnabled(bool encLearningEnabled)
         {
             this.encLearningEnabled = encLearningEnabled;
         }
@@ -461,7 +461,7 @@ namespace NeoCortexApi.Encoders
         /**
          * Returns a flag indicating whether encoder learning is enabled.
          */
-        public bool isEncoderLearningEnabled()
+        public bool IsEncoderLearningEnabled()
         {
             return encLearningEnabled;
         }
@@ -495,12 +495,12 @@ namespace NeoCortexApi.Encoders
         /**
          * Should return the output width, in bits.
          */
-        public abstract int getWidth();
+        public abstract int GetWidth();
 
         /**
          * Returns true if the underlying encoder works on deltas
          */
-        public abstract bool isDelta();
+        public abstract bool IsDelta();
 
         /**
          * Encodes inputData and puts the encoded value into the output array,
@@ -512,15 +512,15 @@ namespace NeoCortexApi.Encoders
          *
          * @return
          */
-        public abstract int[] encodeIntoArray(T inputData);
+        public abstract int[] EncodeIntoArray(T inputData);
 
         /**
          * Set whether learning is enabled.
          * @param 	learningEnabled		flag indicating whether learning is enabled
          */
-        public void setLearning(bool learningEnabled)
+        public void SetLearning(bool learningEnabled)
         {
-            setLearningEnabled(learningEnabled);
+            SetLearningEnabled(learningEnabled);
         }
 
         /**
@@ -543,7 +543,7 @@ namespace NeoCortexApi.Encoders
         public int[] Encode(T inputData)
         {
             //int[] output = new int[NumOfBits];
-            int[] output = encodeIntoArray(inputData);
+            int[] output = EncodeIntoArray(inputData);
             return output;
         }
 
@@ -558,15 +558,15 @@ namespace NeoCortexApi.Encoders
          */
 
 
-        public List<String> getScalarNames(String parentFieldName)
+        public List<String> GetScalarNames(String parentFieldName)
         {
             List<String> names = new List<String>();
-            if (getEncoders() != null)
+            if (GetEncoders() != null)
             {
-                List<EncoderTuple<T>> encoders = getEncoders(this);
+                List<EncoderTuple<T>> encoders = GetEncoders(this);
                 foreach (var tuple in encoders)
                 {
-                    List<String> subNames = ((EncoderBase<T>)tuple.Encoder).getScalarNames(tuple.Name);
+                    List<String> subNames = ((EncoderBase<T>)tuple.Encoder).GetScalarNames(tuple.Name);
 
                     List<String> hierarchicalNames = new List<String>();
                     if (parentFieldName != null)
@@ -587,7 +587,7 @@ namespace NeoCortexApi.Encoders
                 }
                 else
                 {
-                    names.Add((String)getEncoderTuple(this).Name);
+                    names.Add((String)GetEncoderTuple(this).Name);
                 }
             }
 
@@ -602,7 +602,7 @@ namespace NeoCortexApi.Encoders
          */
         // @SuppressWarnings("unchecked")
 
-        public List<FieldMetaType> getDecoderOutputFieldTypes()
+        public List<FieldMetaType> GetDecoderOutputFieldTypes()
         {
             if (FlattenedFieldTypeList != null)
             {
@@ -610,9 +610,9 @@ namespace NeoCortexApi.Encoders
             }
 
             List<FieldMetaType> retVal = new List<FieldMetaType>();
-            foreach (var t in getEncoders(this))
+            foreach (var t in GetEncoders(this))
             {
-                List<FieldMetaType> subTypes = ((EncoderBase<T>)t.Encoder).getDecoderOutputFieldTypes();
+                List<FieldMetaType> subTypes = ((EncoderBase<T>)t.Encoder).GetDecoderOutputFieldTypes();
                 retVal.AddRange(subTypes);
             }
             FlattenedFieldTypeList = retVal;
@@ -662,16 +662,16 @@ namespace NeoCortexApi.Encoders
          *
          * @return
          */
-        public List<double> getScalars(double inputData)
+        public List<double> GetScalars(double inputData)
         {
             List<double> retVals = new List<double>();
 
-            List<EncoderTuple<T>> encoders = getEncoders(this);
+            List<EncoderTuple<T>> encoders = GetEncoders(this);
             if (encoders != null)
             {
                 foreach (EncoderTuple<T> t in encoders)
                 {
-                    List<double> values = t.Encoder.getScalars(inputData);
+                    List<double> values = t.Encoder.GetScalars(inputData);
                     retVals.AddRange(values);
                 }
             }
@@ -695,15 +695,15 @@ namespace NeoCortexApi.Encoders
          *
          * @return	list of encoded values in String form
          */
-        public List<String> getEncodedValues<TINP>(TINP inputData)
+        public List<String> GetEncodedValues<TINP>(TINP inputData)
         {
             List<String> retVals = new List<String>();
-            Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> encoders = getEncoders();
+            Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> encoders = GetEncoders();
             if (encoders != null && encoders.Count > 0)
             {
                 foreach (EncoderTuple<T> t in encoders.Keys)
                 {
-                    retVals.AddRange(t.Encoder.getEncodedValues(inputData));
+                    retVals.AddRange(t.Encoder.GetEncodedValues(inputData));
                 }
             }
             else
@@ -722,15 +722,15 @@ namespace NeoCortexApi.Encoders
          *
          * @return 	array of bucket indices
          */
-        public int[] getBucketIndices(String input)
+        public int[] GetBucketIndices(String input)
         {
             List<int> l = new List<int>();
-            Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> encoders = getEncoders();
+            Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> encoders = GetEncoders();
             if (encoders != null && encoders.Count > 0)
             {
                 foreach (EncoderTuple<T> t in encoders.Keys)
                 {
-                    l.AddRange(t.Encoder.getBucketIndices(input));
+                    l.AddRange(t.Encoder.GetBucketIndices(input));
                 }
             }
             else
@@ -749,15 +749,15 @@ namespace NeoCortexApi.Encoders
          *
          * @return 	array of bucket indices
          */
-        public int[] getBucketIndices(double input)
+        public int[] GetBucketIndices(double input)
         {
             List<int> l = new List<int>();
-            Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> encoders = getEncoders();
+            Dictionary<EncoderTuple<T>, List<EncoderTuple<T>>> encoders = GetEncoders();
             if (encoders != null && encoders.Count > 0)
             {
                 foreach (EncoderTuple<T> t in encoders.Keys)
                 {
-                    l.AddRange(t.Encoder.getBucketIndices(input));
+                    l.AddRange(t.Encoder.GetBucketIndices(input));
                 }
             }
             else
@@ -777,11 +777,11 @@ namespace NeoCortexApi.Encoders
          *
          * @return string representation of scalar values
          */
-        public String scalarsToStr<S>(List<S> scalarValues, List<String> scalarNames)
+        public String ScalarsToStr<S>(List<S> scalarValues, List<String> scalarNames)
         {
             if (scalarNames == null || scalarNames == null || scalarNames.Count == 0)
             {
-                scalarNames = getScalarNames("");
+                scalarNames = GetScalarNames("");
             }
 
             StringBuilder desc = new StringBuilder();
@@ -809,7 +809,7 @@ namespace NeoCortexApi.Encoders
          *
          * @return		list of tuples, each containing (name, offset)
          */
-        public List<Tuple<string, int>> getDescription()
+        public List<Tuple<string, int>> GetDescription()
         {
             return description;
         }
@@ -824,10 +824,10 @@ namespace NeoCortexApi.Encoders
          *
          * @return tuple(fieldName, offsetWithinField)
          */
-        public Tuple<string, int> encodedBitDescription(int bitOffset, bool formatted)
+        public Tuple<string, int> EncodedBitDescription(int bitOffset, bool formatted)
         {
             //Find which field it's in
-            List<Tuple<string, int>> description = getDescription();
+            List<Tuple<string, int>> description = GetDescription();
 
             String prevFieldName = null;
             int prevFieldOffset = -1;
@@ -848,9 +848,9 @@ namespace NeoCortexApi.Encoders
             }
             // Return the field name and offset within the field
             // return (fieldName, bitOffset - fieldOffset)
-            int width = formatted ? getDisplayWidth() : getWidth();
+            int width = formatted ? GetDisplayWidth() : GetWidth();
 
-            if (prevFieldOffset == -1 || bitOffset > getWidth())
+            if (prevFieldOffset == -1 || bitOffset > GetWidth())
             {
                 throw new InvalidOperationException($"Bit is outside of allowable range: [0 - {width}");
             }
@@ -862,12 +862,12 @@ namespace NeoCortexApi.Encoders
          * output. This can be used in conjunction with {@link #pprint(int[], String)}.
          * @param prefix
          */
-        public void pprintHeader(String prefix)
+        public void PprintHeader(String prefix)
         {
             //LOGGER.info(prefix == null ? "" : prefix);
 
-            List<Tuple<string, int>> description = getDescription();
-            description.Add(new Tuple<string, int>("end", getWidth()));
+            List<Tuple<string, int>> description = GetDescription();
+            description.Add(new Tuple<string, int>("end", GetWidth()));
 
             int len = description.Count - 1;
             for (int i = 0; i < len; i++)
@@ -883,7 +883,7 @@ namespace NeoCortexApi.Encoders
                 // LOGGER.info(String.format(formatStr, pname));
             }
 
-            len = getWidth() + (description.Count - 1) * 3 - 1;
+            len = GetWidth() + (description.Count - 1) * 3 - 1;
             StringBuilder hyphens = new StringBuilder();
             for (int i = 0; i < len; i++)
                 hyphens.Append("-");
@@ -981,7 +981,7 @@ namespace NeoCortexApi.Encoders
          */
 
 
-        public Tuple<Dictionary<String, object>, List<String>> decode(int[] encoded, String parentFieldName)
+        public Tuple<Dictionary<String, object>, List<String>> Decode(int[] encoded, String parentFieldName)
         {
             Dictionary<string, object> fieldsMap = new Dictionary<string, object>();
             List<String> fieldsOrder = new List<String>();
@@ -989,7 +989,7 @@ namespace NeoCortexApi.Encoders
             String parentName = parentFieldName == null || parentFieldName.Length == 0 || parentFieldName == null ?
                 this.m_Name : $"{parentFieldName}.{this.m_Name}";
 
-            List<EncoderTuple<T>> encoders = getEncoders(this);
+            List<EncoderTuple<T>> encoders = GetEncoders(this);
 
             int len = encoders.Count;
 
@@ -1008,7 +1008,7 @@ namespace NeoCortexApi.Encoders
 
                 int[] fieldOutput = ArrayUtils.sub(encoded, ArrayUtils.range((Integer)threeFieldsTuple.Offset, nextOffset));
 
-                var result = ((EncoderBase<T>)threeFieldsTuple.Encoder).decode(fieldOutput, parentName);
+                var result = ((EncoderBase<T>)threeFieldsTuple.Encoder).Decode(fieldOutput, parentName);
 
                 fieldsMap.AddRange<String, object>((Dictionary<String, object>)result.Item1);
                 fieldsOrder.AddRange((List<String>)result.Item2);
@@ -1024,8 +1024,7 @@ namespace NeoCortexApi.Encoders
          * @return
          */
 
-
-        public String decodedToStr(Tuple<Dictionary<String, object>, List<String>> decodeResults)
+        public String DecodedToStr(Tuple<Dictionary<String, object>, List<String>> decodeResults)
         {
             StringBuilder desc = new StringBuilder();
             Dictionary<String, object> fieldsDict = decodeResults.Item1;
@@ -1064,7 +1063,7 @@ namespace NeoCortexApi.Encoders
          * @return  list of items, each item representing the bucket value for that
          *          bucket.
          */
-        public abstract List<B> getBucketValues<B>(B returnType);
+        public abstract List<B> GetBucketValues<B>(B returnType);
 
         /**
          * Returns a list of {@link Encoding}s describing the inputs for
@@ -1076,16 +1075,16 @@ namespace NeoCortexApi.Encoders
          *
          * @return A list of {@link Encoding}s. Each EncoderResult has
          */
-        public List<Encoding> getBucketInfo(int[] buckets)
+        public List<Encoding> GetBucketInfo(int[] buckets)
         {
             //Concatenate the results from bucketInfo on each child encoder
             List<Encoding> retVals = new List<Encoding>();
             int bucketOffset = 0;
-            foreach (EncoderTuple<T> encoderTuple in getEncoders(this))
+            foreach (EncoderTuple<T> encoderTuple in GetEncoders(this))
             {
                 int nextBucketOffset = -1;
                 List<EncoderTuple<T>> childEncoders = null;
-                if ((childEncoders = getEncoders((EncoderBase<T>)encoderTuple.Encoder)) != null)
+                if ((childEncoders = GetEncoders((EncoderBase<T>)encoderTuple.Encoder)) != null)
                 {
                     nextBucketOffset = bucketOffset + childEncoders.Count;
                 }
@@ -1094,7 +1093,7 @@ namespace NeoCortexApi.Encoders
                     nextBucketOffset = bucketOffset + 1;
                 }
                 int[] bucketIndices = ArrayUtils.sub(buckets, ArrayUtils.range(bucketOffset, nextBucketOffset));
-                List<Encoding> values = encoderTuple.Encoder.getBucketInfo(bucketIndices);
+                List<Encoding> values = encoderTuple.Encoder.GetBucketInfo(bucketIndices);
 
                 retVals.AddRange(values);
 
@@ -1135,12 +1134,11 @@ namespace NeoCortexApi.Encoders
          *                          returned.
          */
 
-
-        public List<Encoding> topDownCompute(int[] encoded)
+        public List<Encoding> TopDownCompute(int[] encoded)
         {
             List<Encoding> retVals = new List<Encoding>();
 
-            List<EncoderTuple<T>> encoders = getEncoders(this);
+            List<EncoderTuple<T>> encoders = GetEncoders(this);
             int len = encoders.Count;
             for (int i = 0; i < len; i++)
             {
@@ -1159,7 +1157,7 @@ namespace NeoCortexApi.Encoders
                 }
 
                 int[] fieldOutput = ArrayUtils.sub(encoded, ArrayUtils.range(offset, nextOffset));
-                List<Encoding> values = encoder.topDownCompute(fieldOutput);
+                List<Encoding> values = encoder.TopDownCompute(fieldOutput);
 
                 retVals.AddRange(values);
             }
@@ -1167,13 +1165,13 @@ namespace NeoCortexApi.Encoders
             return retVals;
         }
 
-        public List<double> closenessScores(List<double> expValues, List<double> actValues, bool fractional)
+        public List<double> ClosenessScores(List<double> expValues, List<double> actValues, bool fractional)
         {
 
             List<double> retVal = new List<double>();
 
             //Fallback closenss is a percentage match
-            List<EncoderTuple<T>> encoders = getEncoders(this);
+            List<EncoderTuple<T>> encoders = GetEncoders(this);
             if (encoders == null || encoders.Count < 1)
             {
                 double err = Math.Abs(expValues[0] - actValues[0]);
@@ -1202,9 +1200,9 @@ namespace NeoCortexApi.Encoders
             }
 
             int scalarIdx = 0;
-            foreach (EncoderTuple<T> res in getEncoders(this))
+            foreach (EncoderTuple<T> res in GetEncoders(this))
             {
-                List<double> values = res.Encoder.closenessScores(
+                List<double> values = res.Encoder.ClosenessScores(
                     expValues.Sublist(scalarIdx, expValues.Count), actValues.Sublist(scalarIdx, actValues.Count), fractional);
 
                 scalarIdx += values.Count;
@@ -1222,7 +1220,7 @@ namespace NeoCortexApi.Encoders
          * @param encoded
          * @return
          */
-        public int[] rightVecProd(SparseObjectMatrix<int[]> matrix, int[] encoded)
+        public int[] RightVecProd(SparseObjectMatrix<int[]> matrix, int[] encoded)
         {
             int[] retVal = new int[matrix.getMaxIndex() + 1];
             for (int i = 0; i < retVal.Length; i++)
@@ -1241,17 +1239,14 @@ namespace NeoCortexApi.Encoders
          *
          * @return	width
          */
-        public int getDisplayWidth()
+        public int GetDisplayWidth()
         {
-            return getWidth() + getDescription().Count - 1;
+            return GetWidth() + GetDescription().Count - 1;
         }
 
         /**
          * Base class for {@link Encoder} builders
          * @param <T>
          */
-
-
-
     }
 }

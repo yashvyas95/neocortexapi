@@ -690,7 +690,7 @@ namespace UnitTestsProject
 
             Assert.AreEqual(1, cn.getSegments(cell9).Count);
             DistalDendrite oldestSegment = cn.getSegments(cell9)[0];
-            tm.reset(cn);
+            tm.Reset(cn);
             tm.Compute(cn, prevActiveColumns2, true);
             tm.Compute(cn, activeColumns, true);
 
@@ -703,7 +703,7 @@ namespace UnitTestsProject
 
             var oldPresynaptic = cn.getSynapses(oldestSegment).Select(s => s.getPresynapticCell()).ToList();
 
-            tm.reset(cn);
+            tm.Reset(cn);
             tm.Compute(cn, prevActiveColumns3, true);
             tm.Compute(cn, activeColumns, true);
             Assert.AreEqual(2, cn.getSegments(cell9).Count);

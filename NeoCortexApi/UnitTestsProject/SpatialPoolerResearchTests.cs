@@ -58,7 +58,7 @@ namespace UnitTestsProject
 
             for (int i = 0; i < 10; i++)
             {
-                sp.compute(mem, inputVector, activeArray, true);
+                sp.Compute(mem, inputVector, activeArray, true);
 
                 var activeCols = ArrayUtils.IndexWhere(activeArray, (el) => el == 1);
 
@@ -93,7 +93,7 @@ namespace UnitTestsProject
 
             int[] inputVector = Helpers.GetRandomVector(1000, parameters.Get<Random>(KEY.RANDOM));
 
-            sp.compute(mem, inputVector, activeArray, true);
+            sp.Compute(mem, inputVector, activeArray, true);
             
             var activeCols = ArrayUtils.IndexWhere(activeArray, (el) => el == 1);
 
@@ -180,13 +180,13 @@ namespace UnitTestsProject
 
             for (int i = 0; i < 10; i++)
             {
-                var overlaps = sp.calculateOverlap(mem, inputVector);
+                var overlaps = sp.CalculateOverlap(mem, inputVector);
                 var strOverlaps = Helpers.StringifyVector(overlaps);
 
-                var inhibitions = sp.inhibitColumns(mem, ArrayUtils.toDoubleArray(overlaps));
+                var inhibitions = sp.InhibitColumns(mem, ArrayUtils.toDoubleArray(overlaps));
                 var strInhibitions = Helpers.StringifyVector(inhibitions);
 
-                sp.compute(mem, inputVector, activeArray, true);
+                sp.Compute(mem, inputVector, activeArray, true);
                 
                 var activeCols = ArrayUtils.IndexWhere(activeArray, (el) => el == 1);
 

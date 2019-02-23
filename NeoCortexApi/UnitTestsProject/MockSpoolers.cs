@@ -41,7 +41,7 @@ namespace UnitTestsProject
         {
             m_InhibitColumns = inhibitColumns;
         }
-        public override int[] inhibitColumns(Connections c, double[] overlaps)
+        public override int[] InhibitColumns(Connections c, double[] overlaps)
         {
             return m_InhibitColumns;// new int[] { 0, 1, 2, 3, 4 };
         }
@@ -62,7 +62,7 @@ namespace UnitTestsProject
         }
         
 
-        public override int[] inhibitColumnsGlobal(Connections c, double[] overlap, double density)
+        public override int[] InhibitColumnsGlobal(Connections c, double[] overlap, double density)
         {
             m_CallBackGlobal?.Invoke(density);
             //setGlobalCalled(true);
@@ -70,7 +70,7 @@ namespace UnitTestsProject
             return new int[] { 1 };
         }
 
-        public override int[] inhibitColumnsLocal(Connections c, double[] overlap, double density)
+        public override int[] InhibitColumnsLocal(Connections c, double[] overlap, double density)
         {
             m_CallBackLocal?.Invoke(density);
             //setGlobalCalled(true);
@@ -96,12 +96,12 @@ namespace UnitTestsProject
 
         }
 
-        public override double getAvgSpanOfConnectedSynapsesForColumn(Connections c, int columnIndex)
+        public override double GetAvgSpanOfConnectedSynapsesForColumn(Connections c, int columnIndex)
         {
             return this.m_avgConnectedSpanForColumnND;
         }
 
-        public override double avgColumnsPerInput(Connections c)
+        public override double AvgColumnsPerInput(Connections c)
         {
             return this.m_avgColumnsPerInput;
         }
@@ -119,7 +119,7 @@ namespace UnitTestsProject
 
         }
 
-        public override void raisePermanenceToThreshold(Connections c, double[] perm, int[] maskPotential)
+        public override void RaisePermanenceToThreshold(Connections c, double[] perm, int[] maskPotential)
         {
             //Mock out
         }
