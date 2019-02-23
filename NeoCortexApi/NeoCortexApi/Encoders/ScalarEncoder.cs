@@ -455,352 +455,352 @@ namespace NeoCortexApi.Encoders
             }
 
             // LOGGER.trace("raw output:" + Arrays.toString(
-            ArrayUtils.sub(encoded, ArrayUtils.range(0, getN()))));
+            ArrayUtils.sub(encoded, ArrayUtils.range(0, getN()));
             //LOGGER.trace("filtered output:" + Arrays.toString(tmpOutput));
 
             // ------------------------------------------------------------------------
             // Find each run of 1's.
-            int[] nz = ArrayUtils.where(tmpOutput, new Condition.Adapter<Integer>() {
-            @Override
-            public boolean eval(int n)
+            int[] nz = ArrayUtils.where(tmpOutput, new Condition.Adapter<Integer>() { });
+
+            List<Tuple> runs = new ArrayList<Tuple>(); //will be tuples of (startIdx, runLength)
+            Arrays.sort(nz);
+            int[] run = new int[] { nz[0], 1 };
+            int i = 1;
+            while (i < nz.length) {
+                if (nz[i] == run[0] + run[1]) {
+                    run[1] += 1;
+                } else {
+                    runs.add(new Tuple(run[0], run[1]));
+                    run = new int[] { nz[i], 1 };
+                }
+                i += 1;
+            }
+            runs.add(new Tuple(run[0], run[1]));
+
+            // If we have a periodic encoder, merge the first and last run if they
+            // both go all the way to the edges
+            if (isPeriodic() && runs.size() > 1) {
+                int l = runs.size() - 1;
+                if (((Integer)runs.get(0).get(0)) == 0 && ((Integer)runs.get(l).get(0)) + ((Integer)runs.get(l).get(1)) == getN()) {
+                    runs.set(l, new Tuple((Integer)runs.get(l).get(0),
+                        ((Integer)runs.get(l).get(1)) + ((Integer)runs.get(0).get(1))));
+                    runs = runs.subList(1, runs.size());
+                }
+            }
+
+            // ------------------------------------------------------------------------
+            // Now, for each group of 1's, determine the "left" and "right" edges, where
+            // the "left" edge is inset by halfwidth and the "right" edge is inset by
+            // halfwidth.
+            // For a group of width w or less, the "left" and "right" edge are both at
+            // the center position of the group.
+            int left = 0;
+            int right = 0;
+            List<MinMax> ranges = new ArrayList<MinMax>();
+            foreach (Tuple tupleRun in runs) {
+                int start = (Integer)tupleRun.get(0);
+                int runLen = (Integer)tupleRun.get(1);
+                if (runLen <= getW()) {
+                    left = right = start + runLen / 2;
+                } else {
+                    left = start + getHalfWidth();
+                    right = start + runLen - 1 - getHalfWidth();
+                }
+
+                double inMin, inMax;
+                // Convert to input space.
+                if (!isPeriodic()) {
+                    inMin = (left - getPadding()) * getResolution() + getMinVal();
+                    inMax = (right - getPadding()) * getResolution() + getMinVal();
+                } else {
+                    inMin = (left - getPadding()) * getRange() / getNInternal() + getMinVal();
+                    inMax = (right - getPadding()) * getRange() / getNInternal() + getMinVal();
+                }
+                // Handle wrap-around if periodic
+                if (isPeriodic()) {
+                    if (inMin >= getMaxVal()) {
+                        inMin -= getRange();
+                        inMax -= getRange();
+                    }
+                }
+
+                // Clip low end
+                if (inMin < getMinVal()) {
+                    inMin = getMinVal();
+                }
+                if (inMax < getMinVal()) {
+                    inMax = getMinVal();
+                }
+
+                // If we have a periodic encoder, and the max is past the edge, break into
+                // 	2 separate ranges
+                if (isPeriodic() && inMax >= getMaxVal()) {
+                    ranges.add(new MinMax(inMin, getMaxVal()));
+                    ranges.add(new MinMax(getMinVal(), inMax - getRange()));
+                } else {
+                    if (inMax > getMaxVal()) {
+                        inMax = getMaxVal();
+                    }
+                    if (inMin > getMaxVal()) {
+                        inMin = getMaxVal();
+                    }
+                    ranges.add(new MinMax(inMin, inMax));
+                }
+            }
+
+            String desc = generateRangeDescription(ranges);
+            String fieldName;
+            // Return result
+            if (parentFieldName != null && !parentFieldName.isEmpty()) {
+                fieldName = String.format("%s.%s", parentFieldName, getName());
+            } else {
+                fieldName = getName();
+            }
+
+            RangeList inner = new RangeList(ranges, desc);
+            Map<String, RangeList> fieldsDict = new HashMap<String, RangeList>();
+            fieldsDict.put(fieldName, inner);
+
+            return new DecodeResult(fieldsDict, Arrays.asList(fieldName));
+        }
+        public boolean eval(int n)
+        {
+            return n > 0;
+        }
+
+        /**
+         * Generate description from a text description of the ranges
+         *
+         * @param	ranges		A list of {@link MinMax}es.
+         */
+        public String generateRangeDescription(List<MinMax> ranges)
+        {
+            StringBuilder desc = new StringBuilder();
+            int numRanges = ranges.size();
+            for (int i = 0; i < numRanges; i++)
             {
-                return n > 0;
+                if (ranges.get(i).min() != ranges.get(i).max())
+                {
+                    desc.append(String.format("%.2f-%.2f", ranges.get(i).min(), ranges.get(i).max()));
+                }
+                else
+                {
+                    desc.append(String.format("%.2f", ranges.get(i).min()));
+                }
+                if (i < numRanges - 1)
+                {
+                    desc.append(", ");
+                }
             }
-        });
-
-        List<Tuple> runs = new ArrayList<Tuple>(); //will be tuples of (startIdx, runLength)
-        Arrays.sort(nz);
-        int[] run = new int[] { nz[0], 1 };
-        int i = 1;
-        while(i<nz.length) {
-            if(nz[i] == run[0] + run[1]) {
-                run[1] += 1;
-            }else{
-                runs.add(new Tuple(run[0], run[1]));
-                run = new int[] { nz[i], 1 };
-            }
-            i += 1;
-        }
-        runs.add(new Tuple(run[0], run[1]));
-
-        // If we have a periodic encoder, merge the first and last run if they
-        // both go all the way to the edges
-        if(isPeriodic() && runs.size() > 1) {
-            int l = runs.size() - 1;
-            if(((Integer) runs.get(0).get(0)) == 0 && ((Integer) runs.get(l).get(0)) + ((Integer) runs.get(l).get(1)) == getN()) {
-                runs.set(l, new Tuple((Integer) runs.get(l).get(0),
-                    ((Integer) runs.get(l).get(1)) + ((Integer) runs.get(0).get(1)) ));
-                runs = runs.subList(1, runs.size());
-            }
+            return desc.toString();
         }
 
-        // ------------------------------------------------------------------------
-        // Now, for each group of 1's, determine the "left" and "right" edges, where
-        // the "left" edge is inset by halfwidth and the "right" edge is inset by
-        // halfwidth.
-        // For a group of width w or less, the "left" and "right" edge are both at
-        // the center position of the group.
-        int left = 0;
-int right = 0;
-List<MinMax> ranges = new ArrayList<MinMax>();
-        for(Tuple tupleRun : runs) {
-            int start = (Integer)tupleRun.get(0);
-int runLen = (Integer)tupleRun.get(1);
-            if(runLen <= getW()) {
-                left = right = start + runLen / 2;
-            }else{
-                left = start + getHalfWidth();
-right = start + runLen - 1 - getHalfWidth();
-            }
+        /**
+         * Return the internal topDownMapping matrix used for handling the
+         * bucketInfo() and topDownCompute() methods. This is a matrix, one row per
+         * category (bucket) where each row contains the encoded output for that
+         * category.
+         *
+         * @param c		the connections memory
+         * @return		the internal topDownMapping
+         */
+        public SparseObjectMatrix<int[]> getTopDownMapping()
+        {
 
-            double inMin, inMax;
-            // Convert to input space.
-            if(!isPeriodic()) {
-                inMin = (left - getPadding()) * getResolution() + getMinVal();
-inMax = (right - getPadding()) * getResolution() + getMinVal();
-            }else{
-                inMin = (left - getPadding()) * getRange() / getNInternal() + getMinVal();
-inMax = (right - getPadding()) * getRange() / getNInternal() + getMinVal();
-            }
-            // Handle wrap-around if periodic
-            if(isPeriodic()) {
-                if(inMin >= getMaxVal()) {
-                    inMin -= getRange();
-inMax -= getRange();
+            if (topDownMapping == null)
+            {
+                //The input scalar value corresponding to each possible output encoding
+                if (isPeriodic())
+                {
+                    setTopDownValues(
+                        ArrayUtils.arange(getMinVal() + getResolution() / 2.0,
+                            getMaxVal(), getResolution()));
+                }
+                else
+                {
+                    //Number of values is (max-min)/resolutions
+                    setTopDownValues(
+                        ArrayUtils.arange(getMinVal(), getMaxVal() + getResolution() / 2.0,
+                            getResolution()));
                 }
             }
 
-            // Clip low end
-            if(inMin<getMinVal()) {
-                inMin = getMinVal();
-            }
-            if(inMax<getMinVal()) {
-                inMax = getMinVal();
+            //Each row represents an encoded output pattern
+            int numCategories = getTopDownValues().length;
+            SparseObjectMatrix<int[]> topDownMapping;
+            setTopDownMapping(
+                topDownMapping = new SparseObjectMatrix<int[]>(
+                    new int[] { numCategories }));
+
+            double[] topDownValues = getTopDownValues();
+            int[] outputSpace = new int[getN()];
+            double minVal = getMinVal();
+            double maxVal = getMaxVal();
+            for (int i = 0; i < numCategories; i++)
+            {
+                double value = topDownValues[i];
+                value = Math.max(value, minVal);
+                value = Math.min(value, maxVal);
+                encodeIntoArray(value, outputSpace);
+                topDownMapping.set(i, Arrays.copyOf(outputSpace, outputSpace.length));
             }
 
-            // If we have a periodic encoder, and the max is past the edge, break into
-            // 	2 separate ranges
-            if(isPeriodic() && inMax >= getMaxVal()) {
-                ranges.add(new MinMax(inMin, getMaxVal()));
-                ranges.add(new MinMax(getMinVal(), inMax - getRange()));
-            }else{
-                if(inMax > getMaxVal()) {
-                    inMax = getMaxVal();
+            return topDownMapping;
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @param <S>	the input value, in this case a double
+         * @return	a list of one input double
+         */
+
+        public List<double> getScalars(double d)
+        {
+            List<double> retVal = new List<double>();
+            retVal.Add(d);
+            return retVal;
+        }
+
+        /**
+         * Returns a list of items, one for each bucket defined by this encoder.
+         * Each item is the value assigned to that bucket, this is the same as the
+         * EncoderResult.value that would be returned by getBucketInfo() for that
+         * bucket and is in the same format as the input that would be passed to
+         * encode().
+         *
+         * This call is faster than calling getBucketInfo() on each bucket individually
+         * if all you need are the bucket values.
+         *
+         * @param	returnType 		class type parameter so that this method can return encoder
+         * 							specific value types
+         *
+         * @return list of items, each item representing the bucket value for that
+         *        bucket.
+         */
+        //@SuppressWarnings("unchecked")
+        //    @Override
+        public List<S> getBucketValues<S>(S t)
+        {
+
+            if (bucketValues == null)
+            {
+                SparseObjectMatrix<int[]> topDownMapping = getTopDownMapping();
+                int numBuckets = topDownMapping.getMaxIndex() + 1;
+                bucketValues = new ArrayList<Double>();
+                for (int i = 0; i < numBuckets; i++)
+                {
+                    ((List<Double>)bucketValues).add((Double)getBucketInfo(new int[] { i }).get(0).get(1));
                 }
-                if(inMin > getMaxVal()) {
-                    inMin = getMaxVal();
-                }
-                ranges.add(new MinMax(inMin, inMax));
+            }
+            return (List<S>)bucketValues;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+
+        public List<Encoding> getBucketInfo(int[] buckets)
+        {
+            SparseObjectMatrix<int[]> topDownMapping = getTopDownMapping();
+
+            //The "category" is simply the bucket index
+            int category = buckets[0];
+            int[] encoding = topDownMapping.getObject(category);
+
+            //Which input value does this correspond to?
+            double inputVal;
+            if (isPeriodic())
+            {
+                inputVal = getMinVal() + getResolution() / 2 + category * getResolution();
+            }
+            else
+            {
+                inputVal = getMinVal() + category * getResolution();
+            }
+
+            return Arrays.asList(new Encoding(inputVal, inputVal, encoding));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        //@Override
+        public List<Encoding> topDownCompute(int[] encoded)
+        {
+            //Get/generate the topDown mapping table
+            SparseObjectMatrix<int[]> topDownMapping = getTopDownMapping();
+
+            // See which "category" we match the closest.
+            int category = ArrayUtils.argmax(rightVecProd(topDownMapping, encoded));
+
+            return getBucketInfo(new int[] { category });
+        }
+
+        /**
+         * Returns a list of {@link Tuple}s which in this case is a list of
+         * key value parameter values for this {@code ScalarEncoder}
+         *
+         * @return	a list of {@link Tuple}s
+         */
+        public Dictionary<string, object> dict()
+        {
+            Dictionary<string, object> l = new ArrayList<Tuple>();
+            l.Add("maxval", getMaxVal());
+            l.Add("bucketValues", getBucketValues(typeof(Double)));
+            l.Add("nInternal", getNInternal());
+            l.Add("name", getName());
+            l.Add("minval", getMinVal());
+            l.Add("topDownValues", Arrays.toString(getTopDownValues()));
+            l.Add("clipInput", clipInput());
+            l.Add("n", getN());
+            l.Add("padding", getPadding());
+            l.Add("range", getRange());
+            l.Add("periodic", isPeriodic());
+            l.Add("radius", getRadius());
+            l.Add("w", getW());
+            l.Add("topDownMappingM", getTopDownMapping());
+            l.Add("halfwidth", getHalfWidth());
+            l.Add("resolution", getResolution());
+            l.Add("rangeInternal", getRangeInternal());
+
+            return l;
+        }
+
+        /**
+         * Returns a {@link EncoderBuilder} for constructing {@link ScalarEncoder}s
+         *
+         * The base class architecture is put together in such a way where boilerplate
+         * initialization can be kept to a minimum for implementing subclasses, while avoiding
+         * the mistake-proneness of extremely long argument lists.
+         *
+         * @see ScalarEncoder.Builder#setStuff(int)
+         */
+        public static class Builder : Encoder.Builder<ScalarEncoder.Builder, ScalarEncoder>
+        {
+            private Builder()
+            {
+
+            }
+            //@Override
+            public ScalarEncoder build()
+            {
+                //Must be instantiated so that super class can initialize
+                //boilerplate variables.
+                encoder = new ScalarEncoder();
+
+                //Call super class here
+                super.build();
+
+                ////////////////////////////////////////////////////////
+                //  Implementing classes would do setting of specific //
+                //  vars here together with any sanity checking       //
+                ////////////////////////////////////////////////////////
+
+                ((ScalarEncoder)encoder).init();
+
+                return (ScalarEncoder)encoder;
             }
         }
-
-        String desc = generateRangeDescription(ranges);
-String fieldName;
-        // Return result
-        if(parentFieldName != null && !parentFieldName.isEmpty()) {
-            fieldName = String.format("%s.%s", parentFieldName, getName());
-        }else{
-            fieldName = getName();
-        }
-
-        RangeList inner = new RangeList(ranges, desc);
-Map<String, RangeList> fieldsDict = new HashMap<String, RangeList>();
-fieldsDict.put(fieldName, inner);
-
-        return new DecodeResult(fieldsDict, Arrays.asList(fieldName));
-    }
-
-    /**
-     * Generate description from a text description of the ranges
-     *
-     * @param	ranges		A list of {@link MinMax}es.
-     */
-    public String generateRangeDescription(List<MinMax> ranges)
-{
-    StringBuilder desc = new StringBuilder();
-    int numRanges = ranges.size();
-    for (int i = 0; i < numRanges; i++)
-    {
-        if (ranges.get(i).min() != ranges.get(i).max())
-        {
-            desc.append(String.format("%.2f-%.2f", ranges.get(i).min(), ranges.get(i).max()));
-        }
-        else
-        {
-            desc.append(String.format("%.2f", ranges.get(i).min()));
-        }
-        if (i < numRanges - 1)
-        {
-            desc.append(", ");
-        }
-    }
-    return desc.toString();
-}
-
-/**
- * Return the internal topDownMapping matrix used for handling the
- * bucketInfo() and topDownCompute() methods. This is a matrix, one row per
- * category (bucket) where each row contains the encoded output for that
- * category.
- *
- * @param c		the connections memory
- * @return		the internal topDownMapping
- */
-public SparseObjectMatrix<int[]> getTopDownMapping()
-{
-
-    if (topDownMapping == null)
-    {
-        //The input scalar value corresponding to each possible output encoding
-        if (isPeriodic())
-        {
-            setTopDownValues(
-                ArrayUtils.arange(getMinVal() + getResolution() / 2.0,
-                    getMaxVal(), getResolution()));
-        }
-        else
-        {
-            //Number of values is (max-min)/resolutions
-            setTopDownValues(
-                ArrayUtils.arange(getMinVal(), getMaxVal() + getResolution() / 2.0,
-                    getResolution()));
-        }
-    }
-
-    //Each row represents an encoded output pattern
-    int numCategories = getTopDownValues().length;
-    SparseObjectMatrix<int[]> topDownMapping;
-    setTopDownMapping(
-        topDownMapping = new SparseObjectMatrix<int[]>(
-            new int[] { numCategories }));
-
-    double[] topDownValues = getTopDownValues();
-    int[] outputSpace = new int[getN()];
-    double minVal = getMinVal();
-    double maxVal = getMaxVal();
-    for (int i = 0; i < numCategories; i++)
-    {
-        double value = topDownValues[i];
-        value = Math.max(value, minVal);
-        value = Math.min(value, maxVal);
-        encodeIntoArray(value, outputSpace);
-        topDownMapping.set(i, Arrays.copyOf(outputSpace, outputSpace.length));
-    }
-
-    return topDownMapping;
-}
-
-/**
- * {@inheritDoc}
- *
- * @param <S>	the input value, in this case a double
- * @return	a list of one input double
- */
-
-public List<double> getScalars(double d)
-{
-    List<double> retVal = new List<double>();
-    retVal.Add(d);
-    return retVal;
-}
-
-/**
- * Returns a list of items, one for each bucket defined by this encoder.
- * Each item is the value assigned to that bucket, this is the same as the
- * EncoderResult.value that would be returned by getBucketInfo() for that
- * bucket and is in the same format as the input that would be passed to
- * encode().
- *
- * This call is faster than calling getBucketInfo() on each bucket individually
- * if all you need are the bucket values.
- *
- * @param	returnType 		class type parameter so that this method can return encoder
- * 							specific value types
- *
- * @return list of items, each item representing the bucket value for that
- *        bucket.
- */
-//@SuppressWarnings("unchecked")
-//    @Override
-public List<S> getBucketValues<S>(S t)
-{
-
-    if (bucketValues == null)
-    {
-        SparseObjectMatrix<int[]> topDownMapping = getTopDownMapping();
-        int numBuckets = topDownMapping.getMaxIndex() + 1;
-        bucketValues = new ArrayList<Double>();
-        for (int i = 0; i < numBuckets; i++)
-        {
-            ((List<Double>)bucketValues).add((Double)getBucketInfo(new int[] { i }).get(0).get(1));
-        }
-    }
-    return (List<S>)bucketValues;
-}
-
-/**
- * {@inheritDoc}
- */
-
-public List<Encoding> getBucketInfo(int[] buckets)
-{
-    SparseObjectMatrix<int[]> topDownMapping = getTopDownMapping();
-
-    //The "category" is simply the bucket index
-    int category = buckets[0];
-    int[] encoding = topDownMapping.getObject(category);
-
-    //Which input value does this correspond to?
-    double inputVal;
-    if (isPeriodic())
-    {
-        inputVal = getMinVal() + getResolution() / 2 + category * getResolution();
-    }
-    else
-    {
-        inputVal = getMinVal() + category * getResolution();
-    }
-
-    return Arrays.asList(new Encoding(inputVal, inputVal, encoding));
-}
-
-/**
- * {@inheritDoc}
- */
-@Override
-    public List<Encoding> topDownCompute(int[] encoded)
-{
-    //Get/generate the topDown mapping table
-    SparseObjectMatrix<int[]> topDownMapping = getTopDownMapping();
-
-    // See which "category" we match the closest.
-    int category = ArrayUtils.argmax(rightVecProd(topDownMapping, encoded));
-
-    return getBucketInfo(new int[] { category });
-}
-
-/**
- * Returns a list of {@link Tuple}s which in this case is a list of
- * key value parameter values for this {@code ScalarEncoder}
- *
- * @return	a list of {@link Tuple}s
- */
-public Dictionary<string, object> dict()
-{
-    Dictionary<string, object> l = new ArrayList<Tuple>();
-    l.Add("maxval", getMaxVal());
-    l.Add("bucketValues", getBucketValues(typeof(Double)));
-    l.Add("nInternal", getNInternal());
-    l.Add("name", getName());
-    l.Add("minval", getMinVal());
-    l.Add("topDownValues", Arrays.toString(getTopDownValues()));
-    l.Add("clipInput", clipInput());
-    l.Add("n", getN()));
-    l.Add("padding", getPadding());
-    l.Add("range", getRange());
-    l.Add("periodic", isPeriodic());
-    l.Add("radius", getRadius());
-    l.Add("w", getW()));
-    l.Add("topDownMappingM", getTopDownMapping());
-    l.Add("halfwidth", getHalfWidth());
-    l.Add("resolution", getResolution());
-    l.Add("rangeInternal", getRangeInternal());
-
-    return l;
-}
-
-/**
- * Returns a {@link EncoderBuilder} for constructing {@link ScalarEncoder}s
- *
- * The base class architecture is put together in such a way where boilerplate
- * initialization can be kept to a minimum for implementing subclasses, while avoiding
- * the mistake-proneness of extremely long argument lists.
- *
- * @see ScalarEncoder.Builder#setStuff(int)
- */
-public static class Builder : Encoder.Builder<ScalarEncoder.Builder, ScalarEncoder>
-{
-    private Builder() { }
-
-
-    override public ScalarEncoder build()
-    {
-        //Must be instantiated so that super class can initialize
-        //boilerplate variables.
-        encoder = new ScalarEncoder();
-
-        //Call super class here
-        super.build();
-
-        ////////////////////////////////////////////////////////
-        //  Implementing classes would do setting of specific //
-        //  vars here together with any sanity checking       //
-        ////////////////////////////////////////////////////////
-
-        ((ScalarEncoder)encoder).init();
-
-        return (ScalarEncoder)encoder;
-    }
-}
     }
 }
