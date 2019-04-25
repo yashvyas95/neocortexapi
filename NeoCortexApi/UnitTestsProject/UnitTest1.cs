@@ -24,6 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NeoCortex;
 using NeoCortexApi.Entities;
 using NeoCortexApi.Utility;
 using System;
@@ -35,11 +36,14 @@ namespace UnitTestsProject
     [TestClass]
     public class UnitTest1
     {
+
         [TestMethod]
         [DataRow(new int[] { 2048, 6 })]
         [DataRow(new int[] { 100, 20 })]
         public void TestMethod1(int[] data)
         {
+            byte[] d = new byte[10000];
+
             var res = initDimensionMultiples(data, 3);
 
             res = initDimensionMultiples(data, 2);
@@ -148,6 +152,42 @@ namespace UnitTestsProject
             Assert.AreEqual(empty1, empty2);
         }
 
+        [TestMethod]
+        public void CreateDutyCycleGraphTest()
+        {
+            for (int i = 0; i < 1; i++)
+            {
+
+            }
+        }
+
+        [TestMethod]
+        [DataRow(20)]
+        [DataRow(30)]
+        [DataRow(40)]
+        [DataRow(50)]
+        public void TestHeatmapCreation(int threshold)
+        {
+            List<double[,]> bostArrays = new List<double[,]>();
+            bostArrays.Add(new double[64, 64]);
+            bostArrays.Add(new double[64, 64]);
+
+            double v = 0;
+            for (int i = 0; i < 64; i++)
+            {
+                for (int j = 0; j < 64; j++)
+                {
+                    bostArrays[0][i, j] = v;
+                    bostArrays[1][j, i] = v;
+                }
+
+                v += 1;
+            }
+
+            NeoCortexUtils.DrawHeatmaps(bostArrays, $"tessheat_{threshold}.png", 1024, 1024, 60, threshold, 10);
+
+        }
+
         //[TestMethod]
         //public void CompareDentrites()
         //{
@@ -155,6 +195,6 @@ namespace UnitTestsProject
         //    DistalDendrite bestSegment = matchingSegments.Max();
         //}
 
-       
+
     }
 }

@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-
+using NeoCortexApi.DistributedComputeLib;
 
 namespace NeoCortexApi.Entities
 {
@@ -37,16 +37,15 @@ namespace NeoCortexApi.Entities
    * savings in memory and computational efficiency because iterative algorithms
    * need only query indexes containing valid data.
    * 
-   * @author David Ray
+   * @author David Ray, Damir Dobric
    *
    * @param <T>
    */
     public class SparseObjectMatrix<T> : AbstractSparseMatrix<T>, IEquatable<T> where T : class
     {
-        /** keep it simple */
-        private static readonly long serialVersionUID = 1L;
-
-        private Dictionary<int, T> sparseMap = new Dictionary<int, T>();
+        
+        //private IDictionary<int, T> sparseMap = new Dictionary<int, T>();
+        private IDictionary<int, T> sparseMap = new InMemoryDistributedDictionary<int, T>(3);
 
         /**
          * Constructs a new {@code SparseObjectMatrix}
@@ -66,15 +65,14 @@ namespace NeoCortexApi.Entities
         {
 
         }
+        
 
-        /**
-         * Sets the object to occupy the specified index.
-         * 
-         * @param index     the index the object will occupy
-         * @param object    the object to be indexed.
-         */
-        //  @Override
-
+        /// <summary>
+        /// Sets the object to occupy the specified index.
+        /// </summary>
+        /// <param name="index">The index the object will occupy</param>
+        /// <param name="obj">the object to be indexed.</param>
+        /// <returns></returns>
         public override AbstractFlatMatrix<T> set(int index, T obj)
         {
             if (!sparseMap.ContainsKey(index))

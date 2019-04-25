@@ -37,6 +37,8 @@ namespace NeoCortexApi.Entities
  * 
  * @param <T> element type
  */
+
+    //[Serializable]
     public abstract class AbstractFlatMatrix<T> : IFlatMatrix<T>
     {
 
@@ -347,7 +349,7 @@ namespace NeoCortexApi.Entities
 
         public abstract int[] get1DIndexes();
 
-        public abstract T[] asDense(ITypeFactory<T> factory);
+       //public abstract T[] asDense(ITypeFactory<T> factory);
 
         // public abstract IFlatMatrix<T> set(int index, T value);
 

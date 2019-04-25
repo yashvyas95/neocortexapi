@@ -39,7 +39,7 @@ namespace NeoCortexApi.Entities
      * @author Chetan Surpur
      * @author David Ray
      */
-    [Serializable]
+    //[Serializable]
     public class DistalDendrite : Segment, IComparable<DistalDendrite>
     {
         /** keep it simple */

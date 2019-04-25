@@ -340,6 +340,7 @@ namespace UnitTestsProject
             Assert.IsTrue(0 == activeArray.Count(i => i > 0));//, ArrayUtils.INT_GREATER_THAN_0).length);
         }
 
+        // DD
         [TestMethod]
         public void testOverlapsOutput()
         {
@@ -377,10 +378,11 @@ namespace UnitTestsProject
 
 
         [TestMethod]
+        [TestCategory("LongRunning")]
         public void perfTest()
         {
             setupParameters();
-            parameters.setInputDimensions(new int[] { 1, 188 });
+            parameters.setInputDimensions(new int[] { 1, 1 });
             parameters.setColumnDimensions(new int[] { 2048, 10 });
             parameters.setPotentialRadius(94);
             parameters.setPotentialPct(0.5);

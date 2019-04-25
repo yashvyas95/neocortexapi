@@ -49,7 +49,7 @@ namespace NeoCortexApi.Entities
   * @see DistalDendrite
   * @see Connections
   */
-    [Serializable]
+    //[Serializable]
     public class Synapse : IEquatable<Synapse>, IComparable<Synapse>
     {
         /// <summary>

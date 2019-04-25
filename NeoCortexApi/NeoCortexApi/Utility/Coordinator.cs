@@ -36,6 +36,7 @@ namespace NeoCortexApi.Utility
   * @author cogmission
   * @see Topology
   */
+   // [Serializable]
     public class Coordinator //implements Serializable
     {
     /** keep it simple */

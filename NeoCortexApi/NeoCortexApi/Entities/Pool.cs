@@ -47,7 +47,7 @@ namespace NeoCortexApi.Entities
      * @see Connections
      */
 
-    [Serializable]
+    //[Serializable]
     public class Pool
     {
 

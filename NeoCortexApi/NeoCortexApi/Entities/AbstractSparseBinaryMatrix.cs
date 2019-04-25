@@ -31,6 +31,7 @@ using System.Text;
 namespace NeoCortexApi.Entities
 {
     //TODO see type object
+   // [Serializable]
     public abstract class AbstractSparseBinaryMatrix : AbstractSparseMatrix<int>, IEquatable<object>
     {
         /** keep it simple */

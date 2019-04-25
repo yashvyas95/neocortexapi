@@ -40,7 +40,7 @@ namespace NeoCortexApi
      * @author Numenta
      * @author cogmission
      */
-    public class TemporalMemory //: IComputeDecorator
+    public class TemporalMemory : IHtmAlgorithm//: IComputeDecorator
     {
         #region Private Fields
 

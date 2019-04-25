@@ -116,6 +116,6 @@ namespace NeoCortexApi.Encoders
             this.name = name;
             return (TBuilder)this;
         }
-    }
+    
 }
 

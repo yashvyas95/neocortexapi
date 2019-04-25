@@ -41,7 +41,7 @@ namespace NeoCortexApi.Entities
      * @author David Ray
      *
      */
-     [Serializable]
+     //[Serializable]
     public class Column : IEquatable<Column>, IComparable<Column>
     {
         /** keep it simple */
@@ -219,14 +219,7 @@ namespace NeoCortexApi.Entities
             proximalDendrite.setConnectedSynapsesForTest(c, connections);
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public String toString()
-        {
-            return "" + index;
-        }
-
+      
         /**
          * {@inheritDoc}
          * @param otherColumn     the {@code Column} to compare to
@@ -282,7 +275,7 @@ namespace NeoCortexApi.Entities
         /// <returns></returns>
         public override string ToString()
         {
-            return $"Col: Indx:{this.getIndex()}, Cells:{this.cells.Length}";
+            return $"Column: Indx:{this.getIndex()}, Cells:{this.cells.Length}";
         }
     }
 }
