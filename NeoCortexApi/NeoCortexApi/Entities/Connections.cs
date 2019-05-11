@@ -1,4 +1,4 @@
-﻿
+﻿using NeoCortexApi.Utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +8,6 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using System.Collections.ObjectModel;
-using NeoCortexApi.Utility;
 
 namespace NeoCortexApi.Entities
 {
@@ -173,7 +172,7 @@ namespace NeoCortexApi.Entities
         private double permanenceDecrement = 0.10;
 
         /** The main data structure containing columns, cells, and synapses */
-        private AbstractSparseMatrix<Column> memory;
+        private SparseObjectMatrix<Column> memory;
 
         public Cell[] cells { get; set; }
 
@@ -220,9 +219,9 @@ namespace NeoCortexApi.Entities
         /** The random number generator */
         public Random random;
 
-        public int getNextSegmentOrdinal()
+        public DentriteComparer GetComparer()
         {
-            return nextSegmentOrdinal;
+            return new DentriteComparer(nextSegmentOrdinal);
         }
 
         ///** Sorting Lambda used for sorting active and matching segments */
@@ -414,7 +413,7 @@ namespace NeoCortexApi.Entities
          * Sets the matrix containing the {@link Column}s
          * @param mem
          */
-        public void setMemory(AbstractSparseMatrix<Column> mem)
+        public void setMemory(SparseObjectMatrix<Column> mem)
         {
             this.memory = mem;
         }
@@ -423,7 +422,7 @@ namespace NeoCortexApi.Entities
          * Returns the matrix containing the {@link Column}s
          * @return
          */
-        public AbstractSparseMatrix<Column> getMemory()
+        public SparseObjectMatrix<Column> getMemory()
         {
             return memory;
         }
@@ -669,7 +668,7 @@ namespace NeoCortexApi.Entities
          *
          * @param s the {@link SparseObjectMatrix}
          */
-        public void setProximalPermanences(AbstractSparseMatrix<double[]> s)
+        public void setProximalPermanences(SparseObjectMatrix<double[]> s)
         {
             foreach (int idx in s.getSparseIndices())
             {

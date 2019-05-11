@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using NeoCortexApi.Utility;
 
-namespace NeoCortexApi.Entities
+namespace NeoCortexApi.Utility
 {
    // [Serializable]
-    public class Topology : Coordinator 
+    public class Topology : Coordinator //implements Serializable
     {
    
+        //private IntGenerator[] igs;
+        //private int[] centerPosition;
+
+
         /**
          * Constructs a new {@link AbstractFlatMatrix} object to be configured with specified
          * dimensions and major ordering.

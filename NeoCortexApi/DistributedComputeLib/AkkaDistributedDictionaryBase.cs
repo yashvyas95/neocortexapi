@@ -7,7 +7,6 @@ using Akka.Actor;
 using Akka.Configuration;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using NeoCortexApi.Entities;
 
 namespace NeoCortexApi.DistributedComputeLib
 {

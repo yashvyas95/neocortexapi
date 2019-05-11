@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NeoCortexArrayLib\NeoCortexArrayLib.csproj" />
-    <ProjectReference Include="..\NeoCortexEntities\NeoCortexEntities.csproj" />
   </ItemGroup>
 
 </Project>

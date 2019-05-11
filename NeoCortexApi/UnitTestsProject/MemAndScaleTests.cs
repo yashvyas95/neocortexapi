@@ -5,6 +5,10 @@ using NeoCortexApi.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
+using NeoCortexApi.Utility;
+using NeoCortexApi.DistributedCompute;
+using System.Threading;
 
 namespace UnitTestsProject
 {
